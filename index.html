@@ -88,6 +88,11 @@
   .note .tag{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em;
     text-transform:uppercase; color:var(--brass); padding-top:3px; white-space:nowrap}
   .note p{margin:0; font-size:15.5px}
+
+  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
+  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
+  .defn p{margin:0; font-size:16.5px; line-height:1.58; max-width:64ch}
+  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px}
   .note .tag.fact{color:var(--ink)}
 
   /* Wu's words — given their own register */
@@ -155,7 +160,12 @@
     <p class="lede">A line is just a line. Nothing on it is special — until you choose
       one point to call <b>0</b>, and a second to call <b>1</b>. That one choice fixes
       every whole number. Build it yourself below.</p>
-    <blockquote class="quote epigraph">&ldquo;&hellip;a line each of whose points is uniquely identified with a (real) number.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, on what the number line <em>is</em></span></blockquote>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;&hellip;a line each of whose points is uniquely identified with a (real) number.&rdquo;
+      <span class="src">&mdash; Understanding Numbers in Elementary School Mathematics, &sect;1.4 (quoted with permission)</span></p>
   </div>
 
   <blockquote class="quote">&ldquo;Fix a horizontal straight line and designate a point on it as 0.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, where every number line begins</span></blockquote>

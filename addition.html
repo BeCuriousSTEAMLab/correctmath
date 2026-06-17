@@ -71,6 +71,11 @@
   .note .tag.fact{color:var(--ink)}
   .note p{margin:0; font-size:15.5px}
 
+  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
+  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
+  .defn p{margin:0; font-size:16.5px; line-height:1.58; max-width:64ch}
+  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px}
+
   .quote{font-family:var(--serif); font-style:italic; font-size:clamp(20px,2.7vw,26px); line-height:1.42; color:var(--ink); max-width:58ch; margin:26px 0; padding:2px 0 2px 22px; border-left:3px solid var(--brass)}
   .quote .by{display:block; font-family:var(--mono); font-style:normal; font-size:12.5px; letter-spacing:.04em; color:var(--brass); margin-top:11px}
   .quote.epigraph{font-size:clamp(19px,2.4vw,23px); margin-top:20px}
@@ -109,6 +114,12 @@
       <b>4 + 7</b>? Don't memorize it — <b>build</b> it. Lay a length of 4, butt a length of 7
       against its end, and read where you land.</p>
     <blockquote class="quote epigraph">&ldquo;&hellip;addition is simple: concatenate, then measure the length.&rdquo;<span class="by">&mdash; Hung-Hsi Wu</span></blockquote>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>m + n is the length of the concatenation of a segment of length m and a segment of length n.
+      <span class="src">&mdash; Understanding Numbers in Elementary School Mathematics (quoted with permission)</span></p>
   </div>
 
   <!-- INTERACTIVE: concatenation -->
@@ -156,10 +167,8 @@
 
     <h2>The rule, stated once</h2>
     <p>What works for 4 and 7 works for any two whole numbers. There&rsquo;s no special case to learn,
-      no carrying trick to memorize first — those come later, and they rest on <i>this</i>. The whole of
-      addition is one geometric sentence:</p>
-
-    <blockquote class="quote">&ldquo;m + n is the length of the concatenation of a segment of length m and a segment of length n.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, addition in one line</span></blockquote>
+      no carrying trick to memorize first &mdash; those come later, and they rest on <i>this</i>: the single
+      definition at the top of the page. Concatenate the two lengths; the sum is the point you reach.</p>
 
     <div class="note">
       <span class="tag">Convention</span>
