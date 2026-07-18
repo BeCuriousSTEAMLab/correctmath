@@ -1,0 +1,218 @@
+<!-- correctmath.io — Work with me / Services page.
+     Deploy as services.html. Matches the landing page design system exactly:
+     vellum-blue grid background, navy ink, brass accent, same font stack.
+     Self-contained: no build step, no external JS. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work with me · correctmath.io</title>
+<meta name="description" content="Home education evaluations, math tutoring and test prep, and curriculum consulting — from a PA & CA certified math specialist with 15 years in K-12 education.">
+<meta property="og:title" content="Work with me · correctmath.io">
+<meta property="og:description" content="Evaluations, tutoring and test prep, and curriculum consulting for families and teachers — grounded in math done right.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://correctmath.io/services.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --vellum:#e9edf1; --vellum-2:#e1e7ec; --grid:#d3dbe2; --paper:#ffffff;
+    --ink:#173552; --ink-soft:#4a647d; --brass:#dd8a26; --brass-soft:#f3dcb4;
+    --teal:#2c7a7b; --rule:#c7d2db;
+    --shadow:0 1px 2px rgba(23,53,82,.06), 0 12px 30px -16px rgba(23,53,82,.25);
+    --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --body:'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; color:var(--ink); font-family:var(--body); line-height:1.6; font-size:17px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(180deg, var(--vellum), var(--vellum-2));
+    background-attachment:fixed;
+  }
+  .wrap{max-width:940px; margin:0 auto; padding:0 24px}
+
+  header.site{display:flex; align-items:baseline; justify-content:space-between; padding:26px 0 8px; gap:16px; flex-wrap:wrap}
+  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink); font-size:15px; text-decoration:none}
+  .brand b{color:var(--brass)}
+  .site nav{font-family:var(--mono); font-size:13px; color:var(--ink-soft); letter-spacing:.03em}
+  .site nav a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass); padding-bottom:1px}
+
+  /* hero */
+  .hero{padding:34px 0 6px}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(34px,5.6vw,52px); line-height:1.08; letter-spacing:-.02em; margin:0 0 18px; max-width:22ch}
+  h1 em{font-style:normal; color:var(--brass)}
+  .lede{font-size:clamp(17px,2.2vw,20px); max-width:58ch; margin:0 0 8px}
+  .lede b{font-weight:600}
+
+  .jump{display:flex; gap:10px; flex-wrap:wrap; margin:24px 0 4px}
+  .jump a{font-family:var(--mono); font-size:12.5px; color:var(--ink); text-decoration:none;
+    background:var(--paper); border:1px solid var(--rule); border-radius:999px; padding:8px 15px; box-shadow:var(--shadow)}
+  .jump a:hover{border-color:var(--brass)}
+
+  /* service card — mirrors .prin / .lesson conventions: paper, brass top border, soft shadow */
+  .svc{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass);
+    border-radius:14px; box-shadow:var(--shadow); padding:24px 26px; margin:22px 0; scroll-margin-top:20px}
+  .svc .label{font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--brass); display:block; margin-bottom:9px}
+  .svc .ask{font-family:var(--disp); font-weight:600; font-size:clamp(21px,2.8vw,26px); line-height:1.22; margin:0 0 8px; letter-spacing:-.01em}
+  .svc .intro{font-size:15px; color:var(--ink-soft); margin:0 0 6px; line-height:1.55}
+  .svc .intro em{font-style:italic}
+
+  .offer{border-top:1px dashed var(--rule); padding:15px 0}
+  .offer:last-of-type{padding-bottom:2px}
+  .offer h3{font-family:var(--disp); font-size:16px; font-weight:600; margin:0 0 3px}
+  .offer p{margin:0; font-size:14px; color:var(--ink-soft); line-height:1.55}
+  .offer .get{font-family:var(--mono); font-size:12px; color:var(--teal); margin-top:5px; display:block}
+
+  .rate-line{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;
+    margin-top:16px; padding-top:15px; border-top:1px solid var(--rule)}
+  .rate-line .amount{font-family:var(--disp); font-weight:600; font-size:16px}
+  .rate-line .fine{font-family:var(--mono); font-size:12px; color:var(--ink-soft)}
+
+  .btn{display:inline-block; background:var(--teal); color:#fff; text-decoration:none;
+    font-family:var(--mono); font-size:13px; letter-spacing:.03em; padding:11px 20px; border-radius:9px; margin-top:15px}
+  .btn:hover{filter:brightness(1.06)}
+
+  /* credentials strip */
+  .creds{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:34px 0 4px}
+  @media (max-width:640px){ .creds{grid-template-columns:1fr 1fr} }
+  .creds div{background:var(--paper); border:1px solid var(--rule); border-radius:12px; box-shadow:var(--shadow);
+    padding:14px 16px; font-size:12.5px; color:var(--ink-soft); line-height:1.4}
+  .creds strong{display:block; font-family:var(--disp); color:var(--ink); font-size:14px; font-weight:600; margin-bottom:2px}
+
+  .dirnote{margin:34px 0 0; font-size:14px; color:var(--ink-soft); text-align:center}
+  .dirnote a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
+
+  footer.site{border-top:1px solid var(--rule); margin-top:44px; padding:26px 0 56px; font-family:var(--mono); font-size:13px; color:var(--ink-soft); line-height:1.7}
+  footer.site a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
+</style>
+
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="/">correct<b>math</b>.io</a>
+    <nav><a href="/">&larr; Lessons</a></nav>
+  </header>
+
+  <div class="hero">
+    <h1>Three ways I work with learners &mdash; and the people who <em>teach</em> them.</h1>
+    <p class="lede">I&rsquo;m a PA- and CA-certified teacher with fifteen years in K-12 mathematics.
+      Whether you&rsquo;re a homeschooling family who needs an annual evaluation, a student who needs a hand
+      with math, or a parent or teacher planning <b>how</b> to teach it &mdash; that&rsquo;s the work I do.</p>
+    <div class="jump">
+      <a href="#evaluations">Evaluations</a>
+      <a href="#tutoring">Tutoring &amp; Test Prep</a>
+      <a href="#consulting">Curriculum Consulting</a>
+    </div>
+  </div>
+
+  <!-- BUCKET 1 — EVALUATIONS -->
+  <section class="svc" id="evaluations">
+    <span class="label">Home Education Evaluations</span>
+    <h2 class="ask">Homeschooling in PA? Need your annual evaluation?</h2>
+    <p class="intro">Pennsylvania law requires a certified evaluator each year to confirm that
+      &ldquo;an appropriate education is occurring.&rdquo; It isn&rsquo;t a test of your family against a
+      district&rsquo;s scope and sequence &mdash; it&rsquo;s a portfolio review and a real conversation
+      with your student, done by someone who actually teaches math.</p>
+    <div class="offer">
+      <h3>What you get</h3>
+      <p>Portfolio review, a 15&ndash;30 minute video conversation with your student, and a signed
+      certification letter you submit to your district by June 30 &mdash; delivered within days, with
+      one genuine observation about your student&rsquo;s year, not a form letter.</p>
+      <span class="get">Virtual &middot; statewide &middot; 24 P.S. &sect; 13-1327.1</span>
+    </div>
+    <div class="rate-line">
+      <span class="amount">Flat fee per student</span>
+      <span class="fine">additional students discounted &middot; rates on inquiry</span>
+    </div>
+    <a class="btn" href="mailto:homeschoolevalpa@gmail.com?subject=Evaluation%20Inquiry">Email to schedule an evaluation</a>
+  </section>
+
+  <!-- BUCKET 2 — TUTORING / TEST PREP / DIAGNOSTIC -->
+  <section class="svc" id="tutoring">
+    <span class="label">Tutoring, Test Prep &amp; Diagnostics</span>
+    <h2 class="ask">Stuck, prepping, or want a check-up?</h2>
+    <p class="intro">Sometimes a student is struggling. Sometimes there&rsquo;s a test on the horizon &mdash;
+      the SAT, a placement exam. And sometimes things <em>seem</em> fine, but you want to know whether the
+      tricky conceptual foundations are actually solid: fractions in middle school, the jump into algebra,
+      functions in high school. I work with students in all three cases.</p>
+    <div class="offer">
+      <h3>Regular tutoring</h3>
+      <p>Ongoing one-on-one sessions, paced to the student and built on understanding &mdash; not just
+      getting to the answer.</p>
+    </div>
+    <div class="offer">
+      <h3>Test preparation</h3>
+      <p>Focused work toward a specific exam &mdash; SAT math, placement or entrance tests &mdash; on a
+      timeline that fits the test date.</p>
+    </div>
+    <div class="offer">
+      <h3>Conceptual diagnostic</h3>
+      <p>A single session (or short series) to pinpoint whether the shaky-but-critical foundations are
+      really there, with a written summary of exactly what to shore up. It&rsquo;s correctmath.io&rsquo;s
+      definitions-first lens, applied to one student.</p>
+      <span class="get">a good place to start if you&rsquo;re not sure what&rsquo;s wrong</span>
+    </div>
+    <div class="rate-line">
+      <span class="amount">Hourly, test-prep package, or single diagnostic</span>
+      <span class="fine">rates on inquiry</span>
+    </div>
+    <a class="btn" href="mailto:homeschoolevalpa@gmail.com?subject=Tutoring%20Inquiry">Email about tutoring or test prep</a>
+  </section>
+
+  <!-- BUCKET 3 — CONSULTING -->
+  <section class="svc" id="consulting">
+    <span class="label">Curriculum &amp; Pedagogy Consulting</span>
+    <h2 class="ask">Planning how to teach &mdash; at home or in a classroom?</h2>
+    <p class="intro">This is where fifteen years of curriculum work meets your planning. Whether you&rsquo;re
+      a homeschooling parent designing a year, or a teacher looking to build something more ambitious than a
+      textbook alone, I can help you design it &mdash; grounded in how mathematics actually holds together.</p>
+    <div class="offer">
+      <h3>Scope-and-sequence session</h3>
+      <p>A working call plus a written one-page math roadmap for the year &mdash; age-appropriate, designed
+      to complement the materials you already have, not replace them.</p>
+    </div>
+    <div class="offer">
+      <h3>Textbook &amp; curriculum fit review</h3>
+      <p>I look at what you&rsquo;re using and give you a short, honest written recommendation: keep it,
+      adjust it, or here&rsquo;s a better fit for your students.</p>
+    </div>
+    <div class="offer">
+      <h3>Project-based learning design</h3>
+      <p>Want math to live in something real &mdash; a build, a garden, a budget, a neighborhood project?
+      I&rsquo;ve designed hands-on, standards-aligned programs from scratch, for both homeschool families and
+      school networks, and I can help you shape one that fits your learners and complements your curriculum.</p>
+    </div>
+    <div class="offer">
+      <h3>Lesson brainstorm session</h3>
+      <p>A focused call on a specific topic that&rsquo;s hard to teach, with a written summary of the approach
+      and how to introduce it so it actually makes sense.</p>
+    </div>
+    <div class="rate-line">
+      <span class="amount">Per session or short package</span>
+      <span class="fine">rates on inquiry</span>
+    </div>
+    <a class="btn" href="mailto:homeschoolevalpa@gmail.com?subject=Consulting%20Inquiry">Email about consulting</a>
+  </section>
+
+  <div class="creds">
+    <div><strong>PA &amp; CA Certified</strong>Teacher, K&ndash;6 &amp; 7&ndash;12</div>
+    <div><strong>M.A.</strong>Mathematics &amp; Education</div>
+    <div><strong>15 years</strong>K-12 classroom &amp; curriculum</div>
+    <div><strong>CAPM&reg;</strong>Project Management</div>
+  </div>
+
+  <p class="dirnote">Need a home education evaluator and I&rsquo;m not the right fit?
+    <a href="/pa-evaluators/">Browse the full PA evaluator directory &rarr;</a></p>
+
+  <footer class="site">
+    <span>Built by Peter Celona &mdash; PA &amp; CA certified mathematics educator, Philadelphia.<br>
+      Evaluations conducted virtually, statewide in Pennsylvania. Tutoring and consulting available remotely.<br>
+      Hand-built for the web: no frameworks, no build step.</span>
+  </footer>
+</div>
