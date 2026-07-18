@@ -1,0 +1,628 @@
+<!-- Lesson 05 — The Rational Numbers. For correctmath.io.
+     Self-contained: no build step, no external JS. Same design system as Lessons 01–04.
+     Sources: H. Wu, Understanding Numbers in Elementary School Mathematics, Chs. 25–26 (quoted with permission). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Rational Numbers · correctmath.io</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --vellum:#e9edf1; --vellum-2:#e1e7ec; --grid:#d3dbe2; --paper:#ffffff;
+    --ink:#173552; --ink-soft:#4a647d; --brass:#dd8a26; --brass-soft:#f3dcb4;
+    --teal:#2c7a7b; --teal-soft:#bfe0df; --tick:#5dade2; --rule:#c7d2db;
+    --shadow:0 1px 2px rgba(23,53,82,.06), 0 12px 30px -16px rgba(23,53,82,.25);
+    --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --body:'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; color:var(--ink); font-family:var(--body); line-height:1.6; font-size:17px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(180deg, var(--vellum), var(--vellum-2));
+    background-attachment:fixed;
+  }
+  .wrap{max-width:940px; margin:0 auto; padding:0 24px}
+
+  header.site{display:flex; align-items:baseline; justify-content:space-between; padding:26px 0 22px; gap:16px; flex-wrap:wrap}
+  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink); font-size:15px; text-decoration:none}
+  .brand b{color:var(--brass)}
+  .site nav a{font-family:var(--mono); font-size:13px; color:var(--ink-soft); letter-spacing:.03em; text-decoration:none; border-bottom:1px solid var(--rule)}
+  .site nav a:hover{color:var(--ink); border-color:var(--brass)}
+
+  .eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); font-weight:600; margin:0 0 14px}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(40px,7vw,66px); line-height:1.02; letter-spacing:-.02em; margin:0 0 16px}
+  h1 .star{color:var(--brass)}
+  .lede{font-size:clamp(18px,2.4vw,21px); max-width:62ch; color:var(--ink); margin:0 0 6px}
+  .hero{padding:14px 0 8px}
+
+  .stage{background:var(--paper); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--shadow); padding:22px 22px 18px; margin:26px 0}
+  .stage svg{display:block; width:100%; height:auto; touch-action:none}
+  .stage .cap{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); letter-spacing:.02em; margin:4px 2px 0}
+
+  .controls{display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; align-items:center}
+  button.ctrl{font-family:var(--mono); font-size:13.5px; font-weight:500; color:var(--ink); background:var(--paper); border:1.5px solid var(--ink); border-radius:9px; padding:9px 14px; cursor:pointer; letter-spacing:.01em; transition:background .15s, color .15s, transform .08s}
+  button.ctrl:hover:not(:disabled){background:var(--ink); color:var(--paper)}
+  button.ctrl.primary{border-color:var(--brass); background:var(--brass); color:#3a2403}
+  button.ctrl.primary:hover:not(:disabled){background:#c9791b; border-color:#c9791b; color:#fff}
+  button.ctrl:active:not(:disabled){transform:translateY(1px)}
+  button.ctrl:disabled{opacity:.34; cursor:not-allowed}
+  button.ctrl:focus-visible{outline:3px solid var(--brass-soft); outline-offset:2px}
+  .status{font-family:var(--mono); font-size:14px; color:var(--ink); margin-left:auto; font-weight:600}
+  .status .p{color:var(--teal)} .status .ps{color:var(--brass)}
+
+  section.prose{padding:14px 0 4px}
+  h2{font-family:var(--disp); font-weight:600; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.01em; margin:38px 0 12px}
+  p{margin:0 0 16px; max-width:64ch}
+  .prose b{font-weight:600}
+
+  .note{display:grid; grid-template-columns:auto 1fr; gap:14px 16px; background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--brass); border-radius:0 12px 12px 0; padding:16px 18px; margin:8px 0 22px; box-shadow:var(--shadow)}
+  .note .tag{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--brass); padding-top:3px; white-space:nowrap}
+  .note .tag.fact{color:var(--ink)}
+  .note p{margin:0; font-size:15.5px}
+  .note .m{font-family:var(--mono); font-weight:600}
+
+  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
+  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
+  .defn p{margin:0; font-size:16.5px; line-height:1.58; max-width:64ch}
+  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px}
+  .defn .center{text-align:center; font-family:var(--mono); font-weight:600; margin:10px 0}
+
+  .quote{font-family:var(--serif); font-style:italic; font-size:clamp(20px,2.7vw,26px); line-height:1.42; color:var(--ink); max-width:58ch; margin:26px 0; padding:2px 0 2px 22px; border-left:3px solid var(--brass)}
+  .quote .by{display:block; font-family:var(--mono); font-style:normal; font-size:12.5px; letter-spacing:.04em; color:var(--brass); margin-top:11px}
+  .quote.epigraph{font-size:clamp(19px,2.4vw,23px); margin-top:20px}
+
+  .contain{font-family:var(--mono); font-size:clamp(15px,2.4vw,18px); font-weight:600; text-align:center; margin:24px 0; letter-spacing:.01em}
+  .contain .set{padding:4px 10px; border-radius:8px; border:1px solid var(--rule); background:var(--paper); box-shadow:var(--shadow); white-space:nowrap; display:inline-block; margin:4px 2px}
+  .contain .w{border-bottom:3px solid var(--tick)}
+  .contain .z{border-bottom:3px solid var(--teal)}
+  .contain .q{border-bottom:3px solid var(--brass)}
+
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:22px 0}
+  @media (max-width:640px){ .pair{grid-template-columns:1fr} }
+  .pair .card{background:var(--paper); border:1px solid var(--rule); border-radius:14px; box-shadow:var(--shadow); padding:18px 20px}
+  .pair .card h3{font-family:var(--mono); font-size:17px; margin:0 0 10px; font-weight:600}
+  .pair .card p{font-size:15px; margin:0 0 10px}
+  .pair .verdict{font-family:var(--mono); font-size:13px; font-weight:600}
+  .verdict.yes{color:var(--teal)} .verdict.no{color:#b04a2f}
+
+  footer.site{border-top:1px solid var(--rule); margin-top:48px; padding:26px 0 56px; font-family:var(--mono); font-size:13px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  footer.site a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
+  .next-link{display:inline-block; font-family:var(--mono); font-size:15px; font-weight:600; color:var(--ink); text-decoration:none; border:1.5px solid var(--brass); border-radius:9px; padding:10px 16px; margin-top:4px; transition:background .15s, color .15s}
+  .next-link:hover{background:var(--brass); color:#3a2403}
+
+  .axis{stroke:var(--ink); stroke-width:2; fill:none}
+  .tick{stroke:var(--ink-soft); stroke-width:1.5}
+  .tick0{stroke:var(--ink); stroke-width:2.5}
+  .num{font-family:var(--mono); font-weight:500; font-size:15px; fill:var(--ink-soft); text-anchor:middle}
+  .num0{fill:var(--ink); font-weight:600}
+  .ptlab{font-family:var(--mono); font-weight:600; font-size:15px; text-anchor:middle}
+  .ptlab.p{fill:var(--teal)} .ptlab.ps{fill:var(--brass)}
+  .badge{font-family:var(--mono); font-size:11.5px; fill:var(--ink-soft); text-anchor:middle}
+  .sidecap{font-family:var(--mono); font-size:12px; font-style:normal; text-anchor:middle}
+  .sidecap.frac{fill:var(--teal)} .sidecap.refl{fill:var(--brass)}
+  .distlab{font-family:var(--mono); font-size:12.5px; font-weight:600; text-anchor:middle}
+  .distlab.p{fill:var(--teal)} .distlab.ps{fill:var(--brass)}
+  .kbd{font-family:var(--mono); font-size:12px; background:var(--vellum); border:1px solid var(--rule); border-bottom-width:2px; border-radius:4px; padding:0 5px}
+
+  @media (max-width:560px){ body{font-size:16px} .status{margin-left:0; width:100%} .num{font-size:12px} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="/">correct<b>math</b>.io</a>
+    <nav><a href="/fractions.html">&larr; Lesson 03 · Fractions, as Points</a></nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Lesson 05 · The two-sided number line</p>
+    <h1>The Rational Numbers<span class="star">*</span></h1>
+    <p class="lede">So far every number has lived to the <b>right</b> of 0. Now we use the whole line.
+      One geometric move — reflection across 0 — builds the rational numbers. You will not see a
+      minus sign anywhere on this page. That is deliberate, and Wu will explain why.</p>
+    <blockquote class="quote epigraph">&ldquo;The fractions together with their reflected images will be seen to form a number system in the sense that we can perform the four arithmetic operations on them all, in a way that is consistent with the operations already defined on the fractions.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, Ch. 25, p. 375</span></blockquote>
+  </div>
+
+  <section class="prose">
+    <h2>1 · The mirror reflection of a point</h2>
+    <p>Recall from Lesson 01 that a <b>number is, by definition, a point on the number line</b>.
+      The rational numbers begin with a single new idea:</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;Take any point <i>p</i> on the number line&mdash;<i>p</i> could be on either side of 0 and, in particular,
+      it does not have to be a fraction&mdash;and we will define its <b>mirror reflection <i>p</i>*</b> as follows.
+      If <i>p</i> = 0, we define 0* to be 0. If <i>p</i> &ne; 0, then <i>p</i>* is the point of the number line
+      on the opposite side of 0 so that <i>p</i> and <i>p</i>* are equidistant from 0.&rdquo;
+      <span class="src">&mdash; Understanding Numbers in Elementary School Mathematics, Ch. 25, p. 375</span></p>
+  </div>
+
+  <section class="prose">
+    <p><b>Drag the teal point <i>p</i></b> — to either side of 0. Its mirror reflection <i>p</i>* follows.
+      The two distances from 0 stay equal because equidistance is the <i>definition</i>, not a coincidence.
+      And watch the labels when you drag <i>p</i> across 0: reflecting an already-starred point stacks a second
+      star, and the two stars cancel. Keyboard: focus <i>p</i> and use <span class="kbd">&larr;</span> <span class="kbd">&rarr;</span>.</p>
+  </section>
+
+  <!-- INTERACTIVE 1: mirror reflection -->
+  <div class="stage">
+    <svg id="mirror" viewBox="0 0 900 210" role="img"
+         aria-label="Interactive number line. Drag point p; its mirror reflection p-star stays equidistant from 0 on the opposite side. Dragging p left of 0 shows the double-star notation collapsing by equation 25.1."></svg>
+    <p class="cap" id="mirrorCap">Equidistance is marked under the line. Drag p across 0 to see p* pick up a second star — and shed it by (25.1).</p>
+    <div class="controls">
+      <button class="ctrl primary" id="reflectTwice" type="button">Reflect twice: p &rarr; p* &rarr; p**</button>
+      <span class="status" id="mirrorStatus" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="tag fact">Eq. (25.1)</span>
+    <p><span class="m">0* = 0</span> &nbsp;and&nbsp; <span class="m">p** = p</span>. In Wu&rsquo;s words: &ldquo;The first is just a definition,
+      and the second is nothing but a succinct way of expressing the fact that reflecting a point across 0 twice
+      in succession brings the point back to itself.&rdquo; (p. 375)</p>
+  </div>
+
+  <section class="prose">
+    <h2>2 · The definition of the rational numbers</h2>
+    <p>With reflection in hand, the definition takes one sentence. Fractions live to the right of 0;
+      their reflections — 1*, 2*, (&#8532;)* — live to the left:</p>
+  </section>
+
+  <!-- STATIC: definition line, Wu p. 376 -->
+  <div class="stage">
+    <svg id="defline" viewBox="0 0 900 130" role="img"
+         aria-label="Number line showing fractions to the right of zero and their starred mirror reflections to the left: two-and-a-half star, 2 star, 1 star, two-thirds star, 0, two-thirds, 1, 2, two-and-a-half."></svg>
+    <p class="cap">Wu&rsquo;s own example points (p. 376). Remember that the fractions include the whole numbers.</p>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;The set of all the fractions and their mirror reflections with respect to 0, i.e., the numbers
+      <i>m</i>/<i>n</i> and (<i>k</i>/<i>l</i>)* for all whole numbers <i>k</i>, <i>l</i>, <i>m</i>, <i>n</i>
+      (<i>l</i> &ne; 0, <i>n</i> &ne; 0), is called the <b>rational numbers</b>.&rdquo;
+      <span class="src">&mdash; Ch. 25, p. 376</span></p>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;The set of whole numbers and their mirror reflections,&rdquo;</p>
+    <p class="center">&hellip;, 3*, 2*, 1*, 0, 1, 2, 3, &hellip;</p>
+    <p>&ldquo;is called the <b>integers</b>.&rdquo;
+      <span class="src">&mdash; Ch. 25, p. 376</span></p>
+  </div>
+
+  <section class="prose">
+    <p>Using &ldquo;&sub;&rdquo; to denote &ldquo;is contained in&rdquo;, the three number systems built so far nest inside one another:</p>
+  </section>
+
+  <p class="contain">
+    <span class="set w">whole numbers</span> &sub; <span class="set z">integers</span> &sub; <span class="set q">rational numbers</span>
+  </p>
+
+  <section class="prose">
+    <h2>3 · Order, positive, negative — by position, not by sign</h2>
+    <p>On the two-sided line, comparing numbers stays what it has always been on this site: a statement about <b>location</b>.</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;We extend the concept of <b>order</b> among numbers from fractions to all numbers: for any <i>x</i>, <i>y</i>
+      on the number line, <b><i>x</i> &lt; <i>y</i></b> means that <i>x</i> is to the left of <i>y</i>.
+      An equivalent notation is <b><i>y</i> &gt; <i>x</i></b>.&rdquo;
+      <span class="src">&mdash; Ch. 25, p. 376</span></p>
+  </div>
+
+  <section class="prose">
+    <p><b>Drag both points.</b> The sentence below rewrites itself from their positions alone —
+      no rules about signs are needed, because no signs exist yet.</p>
+  </section>
+
+  <!-- INTERACTIVE 2: order -->
+  <div class="stage">
+    <svg id="order" viewBox="0 0 900 170" role="img"
+         aria-label="Interactive number line with two draggable points x and y. The inequality between them updates from their positions."></svg>
+    <p class="cap">&ldquo;To the left of&rdquo; is the entire definition of &lt;. Each point also reports whether it is positive, negative, or neither.</p>
+    <div class="controls">
+      <span class="status" id="orderStatus" aria-live="polite" style="margin-left:0"></span>
+    </div>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;Numbers which are to the right of 0 (thus those <i>x</i> satisfying <i>x</i> &gt; 0) are called <b>positive</b>,
+      and those which are to the left of 0 (thus those that satisfy <i>x</i> &lt; 0) are <b>negative</b>.
+      So 2* and (&#8531;)* are negative, while all nonzero fractions are positive.
+      <i>The number 0 is, by definition, neither positive nor negative.</i>&rdquo;
+      <span class="src">&mdash; Ch. 25, p. 376</span></p>
+  </div>
+
+  <section class="prose">
+    <h2>4 · Why p* and not &minus;p?</h2>
+    <p>You have surely noticed what this page is <i>not</i> doing: writing 2* as &ldquo;negative two.&rdquo;
+      That is deliberate, and Wu&rsquo;s reasoning is the pedagogical heart of this whole approach:</p>
+  </section>
+
+  <blockquote class="quote">&ldquo;The negative sign, having to do with the operation of subtraction, simply will not
+    figure in our considerations until we begin to subtract rational numbers. Moreover, the terminology of
+    &lsquo;negative sign&rsquo; carries certain psychological baggage that may interfere with the learning of the basic
+    facts about rational numbers the proper way. For example, if a&nbsp;=&nbsp;&minus;3, then there is nothing
+    &lsquo;negative&rsquo; about &minus;a, which is 3. It is therefore best to withhold introducing the negative sign
+    until its natural appearance in the context of subtraction in Chapter 27.&rdquo;
+    <span class="by">&mdash; Hung-Hsi Wu, Ch. 25, pp. 376&ndash;377</span></blockquote>
+
+  <section class="prose">
+    <p>In other words: &ldquo;&minus;&rdquo; is an <b>operation</b> waiting to be defined, not a name for the left half
+      of the line. The star lets students learn where rational numbers <i>are</i> before any subtraction enters
+      the picture. When subtraction is defined — next lesson — the negative sign arrives with an honest job to do.</p>
+
+    <h2>5 · Why bother with rational numbers at all?</h2>
+    <p>Wu&rsquo;s answer: &ldquo;To answer this question, we take up the problem of solving equations&rdquo; (p. 379).
+      Each expansion of the number system earns its keep by solving equations the old system could not.
+      Compare the same two numbers, 7 and 5, under multiplication and under addition:</p>
+  </section>
+
+  <div class="pair">
+    <div class="card">
+      <h3>7x = 5</h3>
+      <p>Which <b>whole number</b>, multiplied by 7, equals 5? None. But allow x to be a <b>fraction</b> and,
+        in Wu&rsquo;s words, &ldquo;the situation changes radically: the problem now has an answer and it is
+        <sup>5</sup>&frasl;<sub>7</sub>.&rdquo; (p. 379)</p>
+      <p class="verdict yes">&#10003; solved by the fractions: x = 5/7</p>
+    </div>
+    <div class="card">
+      <h3>7 + x = 5</h3>
+      <p>Which whole number, added to 7, equals 5? Again none — and this time, Wu notes, &ldquo;allowing x to be
+        a fraction does not improve the situation.&rdquo; (p. 380)</p>
+      <p class="verdict no">&#10007; unsolvable by the fractions — a genuine gap</p>
+    </div>
+  </div>
+
+  <section class="prose">
+    <p>The gap is visible on the line: starting at 7, you must land on 5 — a move to the <b>left</b>.
+      No fraction can take you there. Press solve and watch which number does.</p>
+  </section>
+
+  <!-- INTERACTIVE 3: solve 7 + x = 5 -->
+  <div class="stage">
+    <svg id="solve" viewBox="0 0 900 160" role="img"
+         aria-label="Number line from 3-star to 8. Pressing solve animates a hop of length 2 leftward from 7, landing on 5, labeled x equals 2-star."></svg>
+    <p class="cap" id="solveCap">The equation demands a leftward move of length 2 — and the rational number 2* is exactly the number that provides it.</p>
+    <div class="controls">
+      <button class="ctrl primary" id="solveBtn" type="button">Solve 7 + x = 5</button>
+      <button class="ctrl" id="solveReset" type="button">Reset</button>
+      <span class="status" id="solveStatus" aria-live="polite">7 + x must land on 5.</span>
+    </div>
+  </div>
+
+  <blockquote class="quote">&ldquo;Now if we add the negative fractions&mdash;the mirror reflections of the fractions&mdash;to
+    fractions to obtain the rational numbers, and if the concept of addition is correctly extended from fractions
+    to the rational numbers, then there will be solutions to every equation a&nbsp;+&nbsp;x&nbsp;=&nbsp;b for any
+    fractions a and b. For example, we shall see that x&nbsp;=&nbsp;2* is the solution to 7&nbsp;+&nbsp;x&nbsp;=&nbsp;5.&rdquo;
+    <span class="by">&mdash; Hung-Hsi Wu, Ch. 26, p. 380</span></blockquote>
+
+  <section class="prose">
+    <h2>Why teach it this way</h2>
+    <p>&ldquo;Correctly extended&rdquo; is a promise, and the next lesson keeps it. Extending addition to the whole
+      two-sided line requires exactly one new geometric idea — a segment with a <i>direction</i> — and it is the
+      subject of Wu&rsquo;s Chapter 27. Definitions first, then the machinery; the star notation means that when the
+      negative sign finally appears, it will mean precisely one thing.</p>
+
+    <p><a class="next-link" href="/vector-addition.html">Read Lesson 06: Adding Rational Numbers, as Vectors &rarr;</a></p>
+  </section>
+
+  <footer class="site">
+    <span>Built by Peter Celona &middot; <a href="/fractions.html">Lesson 03: Fractions, as Points</a><br>
+      Quotations from H. Wu, <i>Understanding Numbers in Elementary School Mathematics</i> (Chs. 25&ndash;26, pp. 375&ndash;380), used with permission.</span>
+    <span><a href="/">correctmath.io</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var SVGNS='http://www.w3.org/2000/svg';
+  var css = getComputedStyle(document.documentElement);
+  var TEAL = css.getPropertyValue('--teal').trim() || '#2c7a7b';
+  var BRASS = css.getPropertyValue('--brass').trim() || '#dd8a26';
+  var INK = css.getPropertyValue('--ink').trim() || '#173552';
+
+  function el(n,at,parent){ var e=document.createElementNS(SVGNS,n); for(var k in at)e.setAttribute(k,at[k]); if(parent)parent.appendChild(e); return e; }
+  function clear(g){ while(g.firstChild) g.removeChild(g.firstChild); }
+
+  // Wu's * notation. No code path on this page can emit a minus sign.
+  function starLabel(v){
+    var a=Math.abs(v), s;
+    if (Math.abs(a-Math.round(a))<1e-9) s=String(Math.round(a));
+    else s=String(Math.round(a*10)/10);
+    if (v>1e-9) return s;
+    if (v<-1e-9) return '('+s+')*';
+    return '0';
+  }
+  // Name of the REFLECTION of the point at coordinate v, showing the star-stacking.
+  // v > 0 (p is a fraction):        p* is written (v)*
+  // v < 0 (p is already starred):   p* is written (v)** = v   — eq. (25.1) in action
+  function reflLabel(v){
+    var a=Math.abs(v), s;
+    if (Math.abs(a-Math.round(a))<1e-9) s=String(Math.round(a));
+    else s=String(Math.round(a*10)/10);
+    if (v>1e-9)  return '('+s+')*';
+    if (v<-1e-9) return '('+s+')** = '+s;
+    return '0';
+  }
+
+  /* shared axis */
+  function drawAxis(svg, cfg){
+    var min=cfg.min, max=cfg.max, y=cfg.y, pad=cfg.pad, W=cfg.w;
+    function X(v){ return pad+(v-min)/(max-min)*(W-2*pad); }
+    el('line',{'class':'axis', x1:X(min)-12, y1:y, x2:X(max)+12, y2:y}, svg);
+    var tR=X(max)+12, tL=X(min)-12;
+    el('path',{'class':'axis', d:'M '+(tR-10)+' '+(y-5)+' L '+tR+' '+y+' L '+(tR-10)+' '+(y+5)}, svg);
+    el('path',{'class':'axis', d:'M '+(tL+10)+' '+(y-5)+' L '+tL+' '+y+' L '+(tL+10)+' '+(y+5)}, svg);
+    for (var n=Math.ceil(min); n<=Math.floor(max); n++){
+      el('line',{'class': n===0?'tick0':'tick', x1:X(n), y1:y-9, x2:X(n), y2:y+9}, svg);
+      var t=el('text',{'class':'num'+(n===0?' num0':''), x:X(n), y:y+30}, svg);
+      t.textContent=starLabel(n);
+    }
+    return X;
+  }
+
+  /* =====================================================
+     1. MIRROR REFLECTION
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('mirror');
+    var W=900, Y=120, PAD=48, MIN=-3.5, MAX=3.5;
+    var X=drawAxis(svg,{min:MIN,max:MAX,y:Y,pad:PAD,w:W});
+    var status=document.getElementById('mirrorStatus');
+
+    var brkP =el('path',{fill:'none',stroke:TEAL,'stroke-width':1.5},svg);
+    var brkPs=el('path',{fill:'none',stroke:BRASS,'stroke-width':1.5,'stroke-dasharray':'4 3'},svg);
+    var distP =el('text',{'class':'distlab p',  y:Y+58},svg);
+    var distPs=el('text',{'class':'distlab ps', y:Y+58},svg);
+
+    var gS=el('g',{},svg);
+    el('circle',{r:9, cy:Y, fill:BRASS, id:'starDot'},gS);
+    var dotS=gS.firstChild;
+    var tickS=el('line',{stroke:BRASS,'stroke-width':1, y1:Y-42, y2:Y-12},gS);
+    var labS=el('text',{'class':'ptlab ps', y:Y-50},gS);
+
+    var ghost=el('circle',{r:7, cy:Y, fill:'none', stroke:INK, 'stroke-width':2, opacity:0},svg);
+
+    var gP=el('g',{tabindex:0, role:'slider', cursor:'grab',
+                   'aria-label':'Point p. Use arrow keys to move; shift for whole steps.',
+                   'aria-valuemin':'-3.4','aria-valuemax':'3.4'},svg);
+    var halo=el('circle',{r:16, cy:Y, fill:TEAL, opacity:.18},gP);
+    var dotP=el('circle',{r:9, cy:Y, fill:TEAL},gP);
+    var tickP=el('line',{stroke:TEAL,'stroke-width':1, y1:Y-42, y2:Y-12},gP);
+    var labP=el('text',{'class':'ptlab p', y:Y-50},gP);
+
+    var p=1.5;
+    function bracket(a,b,y){ return 'M '+a+' '+(y-5)+' V '+y+' H '+b+' V '+(y-5); }
+
+    function render(){
+      var xp=X(p), xs=X(-p), x0=X(0);
+      halo.setAttribute('cx',xp); dotP.setAttribute('cx',xp);
+      tickP.setAttribute('x1',xp); tickP.setAttribute('x2',xp);
+      labP.setAttribute('x',xp); labP.textContent='p = '+starLabel(p);
+      dotS.setAttribute('cx',xs);
+      tickS.setAttribute('x1',xs); tickS.setAttribute('x2',xs);
+      labS.setAttribute('x',xs); labS.textContent='p* = '+reflLabel(p);
+      gP.setAttribute('aria-valuenow',p.toFixed(1));
+      gP.setAttribute('aria-valuetext','p equals '+starLabel(p));
+
+      var d=Math.abs(p);
+      if (d<0.05){
+        brkP.setAttribute('d',''); brkPs.setAttribute('d','');
+        distP.textContent=''; distPs.textContent='';
+        status.innerHTML='p = 0, and Wu defines 0* to be 0.';
+      } else {
+        var by=Y+46;
+        brkP.setAttribute('d',bracket(Math.min(x0,xp)+2, Math.max(x0,xp)-2, by));
+        brkPs.setAttribute('d',bracket(Math.min(x0,xs)+2, Math.max(x0,xs)-2, by));
+        distP.setAttribute('x',(x0+xp)/2);  distP.textContent ='distance '+d.toFixed(1);
+        distPs.setAttribute('x',(x0+xs)/2); distPs.textContent='distance '+d.toFixed(1);
+        if (p>0){
+          status.innerHTML='<span class="p">p = '+starLabel(p)+'</span> &middot; <span class="ps">p* = '+reflLabel(p)+'</span>';
+        } else {
+          status.innerHTML='<span class="p">p = '+starLabel(p)+'</span> &middot; <span class="ps">p* = '+reflLabel(p)+'</span> &nbsp;by (25.1)';
+        }
+      }
+    }
+    function setP(v){ p=Math.max(-3.4,Math.min(3.4,Math.round(v*10)/10)); render(); }
+
+    var dragging=false;
+    function coord(ev){
+      var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+      var loc=pt.matrixTransform(svg.getScreenCTM().inverse());
+      return MIN+(loc.x-PAD)/(W-2*PAD)*(MAX-MIN);
+    }
+    gP.addEventListener('pointerdown',function(ev){ dragging=true; gP.setAttribute('cursor','grabbing'); gP.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+    gP.addEventListener('pointermove',function(ev){ if(dragging) setP(coord(ev)); });
+    gP.addEventListener('pointerup',function(){ dragging=false; gP.setAttribute('cursor','grab'); });
+    gP.addEventListener('keydown',function(ev){
+      var step=ev.shiftKey?1:0.1;
+      if(ev.key==='ArrowLeft'){ setP(p-step); ev.preventDefault(); }
+      if(ev.key==='ArrowRight'){ setP(p+step); ev.preventDefault(); }
+    });
+
+    document.getElementById('reflectTwice').addEventListener('click',function(){
+      if (Math.abs(p)<0.05){ status.textContent='0* = 0 — reflecting 0 goes nowhere. Drag p away from 0 first.'; return; }
+      var homeMsg='p** = p: back home at '+starLabel(p)+'. That is (25.1).';
+      if (reduce){ status.textContent=homeMsg; return; }
+      var x1=X(p), x2=X(-p), t0=null, PH=1300;
+      ghost.setAttribute('opacity',1);
+      function frame(ts){
+        if(!t0)t0=ts;
+        var t=(ts-t0)/PH, xA,xB,u;
+        if(t<1){ xA=x1; xB=x2; u=t; }
+        else if(t<2){ xA=x2; xB=x1; u=t-1; }
+        else { ghost.setAttribute('opacity',0); status.textContent=homeMsg; return; }
+        var e=.5-.5*Math.cos(Math.PI*u);
+        ghost.setAttribute('cx', xA+(xB-xA)*e);
+        ghost.setAttribute('cy', Y-38*Math.sin(Math.PI*e));
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+
+    render();
+  })();
+
+  /* =====================================================
+     2. STATIC DEFINITION LINE (Wu p. 376)
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('defline');
+    var W=900, Y=72, PAD=48, MIN=-3, MAX=3;
+    function X(v){ return PAD+(v-MIN)/(MAX-MIN)*(W-2*PAD); }
+    el('line',{'class':'axis', x1:X(MIN)-12, y1:Y, x2:X(MAX)+12, y2:Y},svg);
+    var tR=X(MAX)+12, tL=X(MIN)-12;
+    el('path',{'class':'axis', d:'M '+(tR-10)+' '+(Y-5)+' L '+tR+' '+Y+' L '+(tR-10)+' '+(Y+5)},svg);
+    el('path',{'class':'axis', d:'M '+(tL+10)+' '+(Y-5)+' L '+tL+' '+Y+' L '+(tL+10)+' '+(Y+5)},svg);
+    var pts=[
+      {v:-2.5,t:'(2\u00BD)*',up:true},{v:-2,t:'2*'},{v:-1,t:'1*'},{v:-2/3,t:'(\u2154)*',up:true},
+      {v:0,t:'0'},
+      {v:2/3,t:'\u2154',up:true},{v:1,t:'1'},{v:2,t:'2'},{v:2.5,t:'2\u00BD',up:true}
+    ];
+    pts.forEach(function(pt){
+      var c = pt.v===0 ? INK : (pt.v>0 ? TEAL : BRASS);
+      el('line',{x1:X(pt.v), y1:Y-8, x2:X(pt.v), y2:Y+8, stroke:c, 'stroke-width': pt.v===0?2.5:2},svg);
+      var t=el('text',{'class':'ptlab', x:X(pt.v), y: pt.up ? Y-16 : Y+30, fill:c, 'font-size':'14.5'},svg);
+      t.textContent=pt.t;
+    });
+    var l=el('text',{'class':'sidecap refl', x:X(-1.7), y:Y+52},svg);
+    l.textContent='mirror reflections of the fractions';
+    var r=el('text',{'class':'sidecap frac', x:X(1.7), y:Y+52},svg);
+    r.textContent='the fractions (incl. whole numbers)';
+  })();
+
+  /* =====================================================
+     3. ORDER
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('order');
+    var W=900, Y=100, PAD=48, MIN=-3.5, MAX=3.5;
+    var X=drawAxis(svg,{min:MIN,max:MAX,y:Y,pad:PAD,w:W});
+    var status=document.getElementById('orderStatus');
+    function clampV(v){ return Math.max(-3.4,Math.min(3.4,Math.round(v*10)/10)); }
+    function signWord(v){
+      if(v>1e-9) return 'positive';
+      if(v<-1e-9) return 'negative';
+      return 'neither positive nor negative';
+    }
+    function makePoint(color,name,v0,labClass){
+      var g=el('g',{tabindex:0, role:'slider', cursor:'grab',
+                    'aria-label':'Point '+name+'. Use arrow keys to move; shift for whole steps.',
+                    'aria-valuemin':'-3.4','aria-valuemax':'3.4'},svg);
+      el('circle',{r:15, cy:Y, fill:color, opacity:.18},g);
+      el('circle',{r:8.5, cy:Y, fill:color},g);
+      var lab=el('text',{'class':'ptlab '+labClass, y:Y-28},g);
+      var badge=el('text',{'class':'badge', y:Y-48},g);
+      var st={v:v0,g:g,name:name,lab:lab,badge:badge};
+      var dragging=false;
+      g.addEventListener('pointerdown',function(ev){ dragging=true; g.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+      g.addEventListener('pointermove',function(ev){
+        if(!dragging) return;
+        var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+        var loc=pt.matrixTransform(svg.getScreenCTM().inverse());
+        st.v=clampV(MIN+(loc.x-PAD)/(W-2*PAD)*(MAX-MIN));
+        renderAll();
+      });
+      g.addEventListener('pointerup',function(){ dragging=false; });
+      g.addEventListener('keydown',function(ev){
+        var step=ev.shiftKey?1:0.1;
+        if(ev.key==='ArrowLeft'){ st.v=clampV(st.v-step); renderAll(); ev.preventDefault(); }
+        if(ev.key==='ArrowRight'){ st.v=clampV(st.v+step); renderAll(); ev.preventDefault(); }
+      });
+      return st;
+    }
+    var x=makePoint(TEAL,'x',-1.5,'p');
+    var y=makePoint(BRASS,'y',2,'ps');
+    function renderAll(){
+      [x,y].forEach(function(s){
+        var px=X(s.v);
+        var cs=s.g.querySelectorAll('circle');
+        cs[0].setAttribute('cx',px); cs[1].setAttribute('cx',px);
+        s.lab.setAttribute('x',px); s.lab.textContent=s.name+' = '+starLabel(s.v);
+        s.badge.setAttribute('x',px); s.badge.textContent=signWord(s.v);
+        s.g.setAttribute('aria-valuenow',s.v.toFixed(1));
+        s.g.setAttribute('aria-valuetext',s.name+' equals '+starLabel(s.v)+', '+signWord(s.v));
+      });
+      if (Math.abs(x.v-y.v)<1e-9) status.textContent='x = y — the points coincide.';
+      else if (x.v<y.v) status.textContent='x < y, because x is to the left of y.  (Equivalently: y > x.)';
+      else status.textContent='y < x, because y is to the left of x.  (Equivalently: x > y.)';
+    }
+    renderAll();
+  })();
+
+  /* =====================================================
+     5. SOLVE 7 + x = 5
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('solve');
+    var W=900, Y=100, PAD=48, MIN=-3, MAX=8;
+    var X=drawAxis(svg,{min:MIN,max:MAX,y:Y,pad:PAD,w:W});
+    var status=document.getElementById('solveStatus');
+
+    el('circle',{cx:X(7), cy:Y, r:8, fill:TEAL},svg);
+    var s1=el('text',{'class':'ptlab p', x:X(7), y:Y-44},svg); s1.textContent='start: 7';
+    el('circle',{cx:X(5), cy:Y, r:8, fill:'none', stroke:BRASS, 'stroke-width':2.5, 'stroke-dasharray':'3 3'},svg);
+    var s2=el('text',{'class':'ptlab ps', x:X(5), y:Y-28},svg); s2.textContent='target: 5';
+
+    var hopPath=el('path',{fill:'none', stroke:BRASS, 'stroke-width':2.5, opacity:0},svg);
+    var hopHead=el('path',{fill:BRASS, opacity:0},svg);
+    var hopLab=el('text',{'class':'ptlab ps', x:(X(7)+X(5))/2, y:Y-64, opacity:0},svg);
+    hopLab.textContent='x = 2*  (leftward, length 2)';
+    var mover=el('circle',{r:8, cy:Y, fill:BRASS, opacity:0},svg);
+    var running=false;
+
+    function arcD(x1,x2,h){ return 'M '+x1+' '+Y+' Q '+((x1+x2)/2)+' '+(Y-h)+' '+x2+' '+Y; }
+    function finish(){
+      hopHead.setAttribute('opacity',1); hopLab.setAttribute('opacity',1);
+      mover.setAttribute('opacity',0);
+      status.textContent='7 + 2* = 5. The solution is x = 2* — a rational number, not a fraction.';
+      running=false;
+    }
+    document.getElementById('solveBtn').addEventListener('click',function(){
+      if (running) return;
+      var x1=X(7), x2=X(5);
+      hopPath.setAttribute('d',arcD(x1,x2,52));
+      hopHead.setAttribute('d','M '+x2+' '+Y+' l 11 -9 l 2 6 z');
+      if (reduce){ hopPath.setAttribute('opacity',1); finish(); return; }
+      running=true;
+      hopPath.setAttribute('opacity',1);
+      var len=hopPath.getTotalLength();
+      hopPath.setAttribute('stroke-dasharray',len);
+      hopPath.setAttribute('stroke-dashoffset',len);
+      mover.setAttribute('opacity',1);
+      var t0=null, DUR=1000;
+      function frame(ts){
+        if(!t0)t0=ts;
+        var u=Math.min(1,(ts-t0)/DUR);
+        var e=.5-.5*Math.cos(Math.PI*u);
+        hopPath.setAttribute('stroke-dashoffset',len*(1-e));
+        var pt=hopPath.getPointAtLength(len*e);
+        mover.setAttribute('cx',pt.x); mover.setAttribute('cy',pt.y);
+        if(u<1) requestAnimationFrame(frame); else finish();
+      }
+      requestAnimationFrame(frame);
+    });
+    document.getElementById('solveReset').addEventListener('click',function(){
+      if (running) return;
+      hopPath.setAttribute('opacity',0); hopHead.setAttribute('opacity',0);
+      hopLab.setAttribute('opacity',0); mover.setAttribute('opacity',0);
+      status.textContent='7 + x must land on 5.';
+    });
+  })();
+})();
+</script>

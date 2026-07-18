@@ -1,0 +1,563 @@
+<!-- Lesson 06 — Adding Rational Numbers, as Vectors. For correctmath.io.
+     Self-contained: no build step, no external JS. Same design system as Lessons 01–05.
+     Vector arrows are drawn (CSS pseudo-element in prose, SVG paths in figures) — the combining
+     arrow glyph U+20D7 is not in the site fonts, so it is never used.
+     Source: H. Wu, Understanding Numbers in Elementary School Mathematics, Ch. 27, §§27.1–27.3,
+     pp. 381–386 (quoted with permission). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding Rational Numbers, as Vectors · correctmath.io</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --vellum:#e9edf1; --vellum-2:#e1e7ec; --grid:#d3dbe2; --paper:#ffffff;
+    --ink:#173552; --ink-soft:#4a647d; --brass:#dd8a26; --brass-soft:#f3dcb4;
+    --teal:#2c7a7b; --teal-soft:#bfe0df; --tick:#5dade2; --rule:#c7d2db;
+    --shadow:0 1px 2px rgba(23,53,82,.06), 0 12px 30px -16px rgba(23,53,82,.25);
+    --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --body:'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; color:var(--ink); font-family:var(--body); line-height:1.6; font-size:17px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(180deg, var(--vellum), var(--vellum-2));
+    background-attachment:fixed;
+  }
+  .wrap{max-width:940px; margin:0 auto; padding:0 24px}
+
+  header.site{display:flex; align-items:baseline; justify-content:space-between; padding:26px 0 22px; gap:16px; flex-wrap:wrap}
+  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink); font-size:15px; text-decoration:none}
+  .brand b{color:var(--brass)}
+  .site nav a{font-family:var(--mono); font-size:13px; color:var(--ink-soft); letter-spacing:.03em; text-decoration:none; border-bottom:1px solid var(--rule)}
+  .site nav a:hover{color:var(--ink); border-color:var(--brass)}
+
+  .eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); font-weight:600; margin:0 0 14px}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(38px,6.6vw,62px); line-height:1.04; letter-spacing:-.02em; margin:0 0 16px}
+  .lede{font-size:clamp(18px,2.4vw,21px); max-width:62ch; color:var(--ink); margin:0 0 6px}
+  .hero{padding:14px 0 8px}
+
+  .stage{background:var(--paper); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--shadow); padding:22px 22px 18px; margin:26px 0}
+  .stage svg{display:block; width:100%; height:auto; touch-action:none}
+  .stage .cap{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); letter-spacing:.02em; margin:4px 2px 0}
+
+  .controls{display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; align-items:center}
+  .stepper{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:14px; color:var(--ink)}
+  .stepper .lab{font-weight:600}
+  .stepper .lab.a{color:var(--teal)} .stepper .lab.b{color:var(--brass)}
+  .stepper button{width:30px; height:30px; border-radius:8px; border:1.5px solid var(--ink); background:var(--paper); color:var(--ink); font-size:17px; line-height:1; cursor:pointer; font-family:var(--mono)}
+  .stepper button:hover{background:var(--ink); color:var(--paper)}
+  .stepper .val{min-width:52px; text-align:center; font-weight:600; font-size:15px}
+  button.ctrl{font-family:var(--mono); font-size:13.5px; font-weight:500; color:var(--ink); background:var(--paper); border:1.5px solid var(--ink); border-radius:9px; padding:9px 14px; cursor:pointer; letter-spacing:.01em; transition:background .15s, color .15s, transform .08s}
+  button.ctrl:hover:not(:disabled){background:var(--ink); color:var(--paper)}
+  button.ctrl:hover:not(:disabled) .vec::after{color:currentColor}
+  button.ctrl.primary{border-color:var(--brass); background:var(--brass); color:#3a2403}
+  button.ctrl.primary:hover:not(:disabled){background:#c9791b; border-color:#c9791b; color:#fff}
+  button.ctrl:active:not(:disabled){transform:translateY(1px)}
+  button.ctrl:disabled{opacity:.34; cursor:not-allowed}
+  button.ctrl:focus-visible, .stepper button:focus-visible{outline:3px solid var(--brass-soft); outline-offset:2px}
+  .status{font-family:var(--mono); font-size:14px; color:var(--ink); margin-left:auto; font-weight:600; line-height:1.9}
+
+  section.prose{padding:14px 0 4px}
+  h2{font-family:var(--disp); font-weight:600; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.01em; margin:38px 0 12px}
+  p{margin:0 0 16px; max-width:64ch}
+  .prose b{font-weight:600}
+
+  .note{display:grid; grid-template-columns:auto 1fr; gap:14px 16px; background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--brass); border-radius:0 12px 12px 0; padding:16px 18px; margin:8px 0 22px; box-shadow:var(--shadow)}
+  .note .tag{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--brass); padding-top:3px; white-space:nowrap}
+  .note .tag.fact{color:var(--ink)}
+  .note p{margin:0; font-size:15.5px; line-height:1.75}
+  .note .m{font-family:var(--mono); font-weight:600}
+  .note .fn{display:block; font-size:13px; color:var(--ink-soft); margin-top:8px}
+
+  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
+  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
+  .defn p{margin:0 0 8px; font-size:16.5px; line-height:1.72; max-width:64ch}
+  .defn p:last-child{margin-bottom:0}
+  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px; line-height:1.6}
+  .defn .center{text-align:center; font-family:var(--mono); font-weight:600; font-size:17px; margin:14px 0; line-height:2}
+
+  .quote{font-family:var(--serif); font-style:italic; font-size:clamp(20px,2.7vw,26px); line-height:1.42; color:var(--ink); max-width:58ch; margin:26px 0; padding:2px 0 2px 22px; border-left:3px solid var(--brass)}
+  .quote .by{display:block; font-family:var(--mono); font-style:normal; font-size:12.5px; letter-spacing:.04em; color:var(--brass); margin-top:11px}
+  .quote.epigraph{font-size:clamp(19px,2.4vw,23px); margin-top:20px}
+
+  /* Vector notation: the arrow is DRAWN, not a font glyph.
+     <span class="vec">x</span> renders x with a small arrow above it. */
+  .vec{
+    font-style:italic; font-weight:600; white-space:nowrap;
+    position:relative; display:inline-block; padding:0 1px;
+  }
+  .vec::after{
+    content:"\2192";                 /* plain rightwards arrow — present in all site fonts */
+    position:absolute; left:50%; transform:translateX(-50%);
+    top:-0.78em; font-size:.6em; font-style:normal; font-weight:600;
+    letter-spacing:0; line-height:1;
+  }
+
+  footer.site{border-top:1px solid var(--rule); margin-top:48px; padding:26px 0 56px; font-family:var(--mono); font-size:13px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  footer.site a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
+
+  .axis{stroke:var(--ink); stroke-width:2; fill:none}
+  .tick{stroke:var(--ink-soft); stroke-width:1.5}
+  .tick0{stroke:var(--ink); stroke-width:2.5}
+  .num{font-family:var(--mono); font-weight:500; font-size:14px; fill:var(--ink-soft); text-anchor:middle}
+  .num0{fill:var(--ink); font-weight:600}
+  .ptlab{font-family:var(--mono); font-weight:600; font-size:14.5px; text-anchor:middle}
+  .ptlab.a{fill:var(--teal)} .ptlab.b{fill:var(--brass)} .ptlab.sum{fill:var(--ink); font-size:16px}
+
+  @media (max-width:560px){ body{font-size:16px} .status{margin-left:0; width:100%} .num{font-size:11px} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="/">correct<b>math</b>.io</a>
+    <nav><a href="/rational-numbers.html">&larr; Lesson 05 · The Rational Numbers</a></nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Lesson 06 · Wu, Chapter 27</p>
+    <h1>Adding Rational Numbers, as Vectors</h1>
+    <p class="lede">In Lesson 02, addition was <b>concatenation</b>: lay two lengths end to end and measure.
+      That worked because every number sat to the right of 0. Now numbers live on both sides — so a segment
+      is no longer enough. It needs a <b>direction</b>. One upgrade, and the whole two-sided line opens up.</p>
+    <blockquote class="quote epigraph">&ldquo;The surprising twist here is that the subtraction of rational numbers
+      will end up being defined in terms of addition.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, Ch. 27, p. 381</span></blockquote>
+  </div>
+
+  <section class="prose">
+    <h2>1 · From segments to vectors</h2>
+    <p>Wu names the plan in one sentence: the way to bring the left half of the line into addition and
+      subtraction is <i>&ldquo;to make every rational number into a &lsquo;vector&rsquo;, and then define the addition
+      of vectors&rdquo;</i> (p. 381). So first: what is a vector?</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;A <b>vector</b> is a segment on the number line together with a designation of one of its two endpoints
+      as a <b>starting point</b> and the other as an <b>endpoint</b>. We shall refer to the length of the segment as
+      the <b>length</b> of the vector, and say the vector is <b>left-pointing</b> if the endpoint is to the left of
+      the starting point, and <b>right-pointing</b> if the endpoint is to the right of the starting point. The
+      <b>direction</b> of a vector refers to whether it is left-pointing or right-pointing.&rdquo;
+      <span class="src">&mdash; Understanding Numbers in Elementary School Mathematics, §27.1, p. 382</span></p>
+  </div>
+
+  <section class="prose">
+    <p><b>Drag either end.</b> The circle is the starting point; the arrowhead is the endpoint. Notice what the
+      readout tracks: just two facts, <b>length</b> and <b>direction</b>. Wu&rsquo;s own examples are one button away —
+      <span class="vec">K</span> is left-pointing with length 1, <span class="vec">L</span> is right-pointing
+      with length 2.</p>
+  </section>
+
+  <!-- INTERACTIVE 1: vector anatomy -->
+  <div class="stage">
+    <svg id="anatomy" viewBox="0 0 900 180" role="img"
+         aria-label="Interactive vector on a number line. Drag the starting point (circle) or the endpoint (arrowhead). The readout reports the vector's length and direction."></svg>
+    <p class="cap" id="anatomyCap">A vector is a segment plus a choice: which end is the start, which is the end.</p>
+    <div class="controls">
+      <button class="ctrl" id="presetK" type="button">Wu&rsquo;s <span class="vec">K</span> (p. 382)</button>
+      <button class="ctrl" id="presetL" type="button">Wu&rsquo;s <span class="vec">L</span> (p. 382)</button>
+      <span class="status" id="anatomyStatus" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <section class="prose">
+    <h2>2 · Special vectors: one for every number</h2>
+    <p>For adding rational numbers we don&rsquo;t need arbitrary vectors — only the ones tied to a number:</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;Let <i>x</i> be a number (not necessarily rational), then we define the vector <span class="vec">x</span>
+      to be the one with its starting point at 0 and endpoint at <i>x</i>.&rdquo; &hellip;
+      &ldquo;A <b>special vector</b> is a vector whose starting point is 0.&rdquo;
+      <span class="src">&mdash; §§27.1&ndash;27.2, pp. 382&ndash;383</span></p>
+  </div>
+
+  <div class="note">
+    <span class="tag fact">Key idea</span>
+    <p>&ldquo;<i>A special vector is completely determined by its length and its direction.</i>&rdquo; Wu&rsquo;s examples:
+      if <span class="vec">x</span> has length 3.7 and is left-pointing, then <span class="m">x = (3.7)*</span>.
+      If <span class="vec">y</span> has length <span class="m">23/7</span> and is right-pointing, then
+      <span class="m">y = 23/7</span>. (p. 383)</p>
+  </div>
+
+  <section class="prose">
+    <h2>3 · Adding vectors: slide, then read the endpoint</h2>
+    <p>Here is the whole mechanism. To add <span class="vec">x</span> and <span class="vec">y</span>,
+      pick up <span class="vec">y</span> and slide it — without turning it — until its tail rests at <i>x</i>:</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;Let <i>x</i> and <i>y</i> be numbers. Then the <b>sum <span class="vec">x</span> + <span class="vec">y</span></b>
+      is the special vector whose endpoint is the new endpoint of <span class="vec">y</span> <i>after</i> we slide
+      <span class="vec">y</span> along the number line until its original starting point (which is 0) rests at <i>x</i>.&rdquo;</p>
+    <p>&ldquo;In intuitive language, the sum <span class="vec">x</span> + <span class="vec">y</span> is the special
+      vector whose endpoint is obtained by <i>&lsquo;going from the point x along a vector with the same length and same
+      direction as <span class="vec">y</span>.&rsquo;</i>&rdquo;
+      <span class="src">&mdash; §27.2, p. 383</span></p>
+  </div>
+
+  <section class="prose">
+    <p><b>Set x and y, then press slide.</b> The teal vector <span class="vec">x</span> stays put; the brass vector
+      <span class="vec">y</span> travels until its tail lands on <i>x</i>; the vertical arrow marks where its tip
+      ends up. Wu&rsquo;s two worked examples are preset — and try <b>y = x*</b> to see two opposite vectors cancel to
+      the zero vector.</p>
+  </section>
+
+  <!-- INTERACTIVE 2: vector addition machine -->
+  <div class="stage">
+    <svg id="machine" viewBox="0 0 900 270" role="img"
+         aria-label="Interactive vector addition. The special vector for x sits on the line; the special vector for y floats above with its tail at 0. Pressing slide moves y until its tail rests at x; the endpoint of the slid vector is the sum."></svg>
+    <p class="cap" id="machineCap">Set two numbers, slide, and read the endpoint. The Key Observation narrates each result below.</p>
+    <div class="controls">
+      <span class="stepper"><span class="lab a">x</span>
+        <button id="xMinus" type="button" aria-label="decrease x">&minus;</button>
+        <span class="val" id="xVal">3</span>
+        <button id="xPlus" type="button" aria-label="increase x">+</button></span>
+      <span class="stepper"><span class="lab b">y</span>
+        <button id="yMinus" type="button" aria-label="decrease y">&minus;</button>
+        <span class="val" id="yVal">(1)*</span>
+        <button id="yPlus" type="button" aria-label="increase y">+</button></span>
+      <button class="ctrl primary" id="slideBtn" type="button">Slide <span class="vec">y</span></button>
+      <button class="ctrl" id="resetBtn" type="button">Reset</button>
+      <span class="status" id="machineStatus" aria-live="polite"></span>
+    </div>
+    <div class="controls" style="margin-top:10px">
+      <button class="ctrl" id="ex1" type="button">Wu: <span class="vec">3</span> + <span class="vec">1*</span></button>
+      <button class="ctrl" id="ex2" type="button">Wu: <span class="vec">3*</span> + <span class="vec">1.2</span></button>
+      <button class="ctrl" id="exCancel" type="button">y = x* &nbsp;(cancellation)</button>
+      <button class="ctrl" id="exSwap" type="button">Swap x &harr; y</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="tag fact">Cancellation</span>
+    <p>Because <span class="vec">x</span> and <span class="vec">x*</span> have the same length but opposite
+      directions, <span class="m"><span class="vec">x</span> + <span class="vec">x*</span> = <span class="vec">0</span></span>
+      — the slid vector lands its tip right back on 0. (p. 384)</p>
+  </div>
+
+  <section class="prose">
+    <h2>4 · The Key Observation</h2>
+    <p>Every result the machine just showed you is governed by one two-part fact, which Wu proves by
+      picture-drawing across all the cases:</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Key Observation &middot; H. Wu</p>
+    <p>&ldquo;Let <i>x</i> and <i>y</i> be rational numbers, then</p>
+    <p>(i) <i>the direction of the sum <span class="vec">x</span> + <span class="vec">y</span> is the direction
+      of the vector whose length is greater</i>, and</p>
+    <p>(ii) <i>the length of the sum <span class="vec">x</span> + <span class="vec">y</span> is the sum of the
+      lengths of the vectors if they have the same direction, and is the difference of the lengths of the two
+      vectors if they have different directions</i>.&rdquo;
+      <span class="src">&mdash; §27.2, p. 384. Wu&rsquo;s footnote: &ldquo;We understand &lsquo;difference&rsquo; to be the longer length minus the shorter length. In particular, it is always positive.&rdquo;</span></p>
+  </div>
+
+  <section class="prose">
+    <p>Two consequences fall out immediately, because a special vector is determined by nothing but its length
+      and direction — and the Key Observation computes both without caring about order:</p>
+  </section>
+
+  <div class="note">
+    <span class="tag fact">Consequences</span>
+    <p>&ldquo;<i>The addition of special vectors is commutative</i>, i.e.,
+      <span class="m"><span class="vec">x</span> + <span class="vec">y</span> = <span class="vec">y</span> + <span class="vec">x</span></span>
+      for all rational numbers x and y.&rdquo; &hellip; &ldquo;<i>The addition of special vectors is associative.</i>&rdquo;
+      And the closure fact that makes the next section legal: &ldquo;<i>If x and y are rational numbers, then there is a
+      rational number z so that</i> <span class="m"><span class="vec">z</span> = <span class="vec">x</span> + <span class="vec">y</span></span>.&rdquo; (pp. 385&ndash;386)
+      <span class="fn">Try the <b>Swap x &harr; y</b> button above: different journey, same endpoint. That is commutativity, seen.</span></p>
+  </div>
+
+  <section class="prose">
+    <h2>5 · The definition of x + y</h2>
+    <p>Everything is now in place. Addition of rational numbers is one line:</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Definition &middot; H. Wu</p>
+    <p>&ldquo;Formally, we define <b>the sum <i>x</i> + <i>y</i></b> for any two numbers <i>x</i> and <i>y</i> to be
+      the endpoint of the vector <span class="vec">x</span> + <span class="vec">y</span>. In other words,&rdquo;</p>
+    <p class="center">x + y &nbsp;=&nbsp; the endpoint of &nbsp;<span class="vec">x</span> + <span class="vec">y</span></p>
+    <p><span class="src">&mdash; §27.3, p. 386</span></p>
+  </div>
+
+  <section class="prose">
+    <p>And because of consequence (iii) of the Key Observation, when <i>x</i> and <i>y</i> are both fractions this
+      new addition is exactly the concatenation-of-lengths addition from Lesson 02 — the new definition
+      <i>extends</i> the old one instead of replacing it. Wu closes the section with the picture to keep:</p>
+  </section>
+
+  <blockquote class="quote">&ldquo;If x and y are rational numbers, then x + y is a rational number whose distance
+    from x is equal to the length of y, and is to the left of x if y is negative and to the right of x if y is
+    positive.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, §27.3, p. 386, consequence (vi)</span></blockquote>
+
+  <section class="prose">
+    <h2>Why teach it this way</h2>
+    <p>Notice what never appeared on this page: a rule like &ldquo;same signs add, different signs subtract.&rdquo;
+      Students don&rsquo;t memorize that sentence here — they <i>watch it happen</i>, and the Key Observation states
+      it precisely, as a provable fact about lengths and directions. And Wu&rsquo;s twist from the top of the chapter
+      is still waiting: subtraction will not be a new idea at all, but addition in disguise. That is where this
+      series goes next.</p>
+  </section>
+
+  <footer class="site">
+    <span>Built by Peter Celona &middot; <a href="/rational-numbers.html">Lesson 05: The Rational Numbers</a><br>
+      Quotations from H. Wu, <i>Understanding Numbers in Elementary School Mathematics</i> (Ch. 27, §§27.1&ndash;27.3, pp. 381&ndash;386), used with permission.</span>
+    <span><a href="/">correctmath.io</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var SVGNS='http://www.w3.org/2000/svg';
+  var css=getComputedStyle(document.documentElement);
+  var TEAL=css.getPropertyValue('--teal').trim()||'#2c7a7b';
+  var BRASS=css.getPropertyValue('--brass').trim()||'#dd8a26';
+  var INK=css.getPropertyValue('--ink').trim()||'#173552';
+
+  function el(n,at,parent){ var e=document.createElementNS(SVGNS,n); for(var k in at)e.setAttribute(k,at[k]); if(parent)parent.appendChild(e); return e; }
+  function clear(g){ while(g.firstChild) g.removeChild(g.firstChild); }
+
+  // HTML vector token for statuses/captions: <span class="vec">x</span>
+  function vec(s){ return '<span class="vec">'+s+'</span>'; }
+
+  // Wu's * notation — no minus signs anywhere.
+  function starLabel(v){
+    var a=Math.abs(v), s;
+    if (Math.abs(a-Math.round(a))<1e-9) s=String(Math.round(a));
+    else s=String(Math.round(a*10)/10);
+    if (v>1e-9) return s;
+    if (v<-1e-9) return '('+s+')*';
+    return '0';
+  }
+  function fmtLen(v){ return String(Math.round(v*10)/10); }
+
+  function drawAxis(svg,cfg){
+    var min=cfg.min,max=cfg.max,y=cfg.y,pad=cfg.pad,W=cfg.w;
+    function X(v){ return pad+(v-min)/(max-min)*(W-2*pad); }
+    el('line',{'class':'axis',x1:X(min)-12,y1:y,x2:X(max)+12,y2:y},svg);
+    var tR=X(max)+12,tL=X(min)-12;
+    el('path',{'class':'axis',d:'M '+(tR-10)+' '+(y-5)+' L '+tR+' '+y+' L '+(tR-10)+' '+(y+5)},svg);
+    el('path',{'class':'axis',d:'M '+(tL+10)+' '+(y-5)+' L '+tL+' '+y+' L '+(tL+10)+' '+(y+5)},svg);
+    for(var n=Math.ceil(min);n<=Math.floor(max);n++){
+      el('line',{'class':n===0?'tick0':'tick',x1:X(n),y1:y-8,x2:X(n),y2:y+8},svg);
+      var t=el('text',{'class':'num'+(n===0?' num0':''),x:X(n),y:y+28},svg);
+      t.textContent=starLabel(n);
+    }
+    return X;
+  }
+
+  // Draw a vector as a thick bar with a tail tick (start) and arrowhead (end).
+  function drawVector(g,x1,x2,y,color){
+    var dir = x2>=x1 ? 1 : -1;
+    var headLen=13;
+    var shaftEnd = x2 - dir*headLen*0.72;
+    el('line',{x1:x1,y1:y,x2:shaftEnd,y2:y,stroke:color,'stroke-width':7,'stroke-linecap':'round'},g);
+    el('line',{x1:x1,y1:y-8,x2:x1,y2:y+8,stroke:color,'stroke-width':2.5},g);
+    el('path',{d:'M '+x2+' '+y+' L '+(x2-dir*headLen)+' '+(y-6.5)+' L '+(x2-dir*headLen)+' '+(y+6.5)+' Z',fill:color},g);
+  }
+
+  // SVG label with a DRAWN arrow above the text (no font glyph).
+  // text like "x" or "y" or "x = 0"; arrow drawn over the first token only.
+  function vecLabelSVG(g,cx,y,letter,cls,color){
+    var t=el('text',{'class':'ptlab '+cls,x:cx,y:y},g);
+    t.textContent=letter;
+    var w=letter.length*8.6;                  // approx mono width at 14.5px
+    var half=Math.min(w/2,11);
+    var ay=y-15;
+    el('line',{x1:cx-half,y1:ay,x2:cx+half-3,y2:ay,stroke:color,'stroke-width':1.6},g);
+    el('path',{d:'M '+(cx+half)+' '+ay+' l -6 -3.4 v 6.8 Z',fill:color},g);
+  }
+
+  /* =====================================================
+     1. VECTOR ANATOMY
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('anatomy');
+    var W=900,Y=104,PAD=48,MIN=-3.5,MAX=3.5;
+    var X=drawAxis(svg,{min:MIN,max:MAX,y:Y,pad:PAD,w:W});
+    function XI(px){ return MIN+(px-PAD)/(W-2*PAD)*(MAX-MIN); }
+    var status=document.getElementById('anatomyStatus');
+    var cap=document.getElementById('anatomyCap');
+
+    var vg=el('g',{},svg);
+    var labS=el('text',{'class':'ptlab a',y:Y-46},svg);
+    var labE=el('text',{'class':'ptlab a',y:Y-46},svg);
+
+    function makeHandle(aria){
+      var g=el('g',{tabindex:0,role:'slider',cursor:'grab','aria-label':aria,
+                    'aria-valuemin':'-3.4','aria-valuemax':'3.4'},svg);
+      el('circle',{r:15,cy:Y,fill:TEAL,opacity:.16},g);
+      el('circle',{r:7,cy:Y,fill:'#ffffff',stroke:TEAL,'stroke-width':2.5},g);
+      return g;
+    }
+    var hS=makeHandle('Starting point. Arrow keys to move; shift for whole steps.');
+    var hE=makeHandle('Endpoint. Arrow keys to move; shift for whole steps.');
+
+    var s=-1, e=-2; // Wu's K: start 1*, end 2*
+    function clampV(v){ return Math.max(-3.4,Math.min(3.4,Math.round(v*10)/10)); }
+
+    function render(){
+      clear(vg);
+      drawVector(vg,X(s),X(e),Y-26,TEAL);
+      var cs=hS.querySelectorAll('circle'); cs[0].setAttribute('cx',X(s)); cs[1].setAttribute('cx',X(s));
+      var ce=hE.querySelectorAll('circle'); ce[0].setAttribute('cx',X(e)); ce[1].setAttribute('cx',X(e));
+      labS.setAttribute('x',X(s)); labS.textContent='start: '+starLabel(s);
+      labE.setAttribute('x',X(e)); labE.textContent='end: '+starLabel(e);
+      hS.setAttribute('aria-valuenow',s.toFixed(1)); hS.setAttribute('aria-valuetext','start '+starLabel(s));
+      hE.setAttribute('aria-valuenow',e.toFixed(1)); hE.setAttribute('aria-valuetext','endpoint '+starLabel(e));
+      var len=Math.abs(e-s);
+      if (len<1e-9){
+        status.textContent='length 0 \u2014 the zero vector';
+        cap.textContent='Start and endpoint coincide: this is the zero vector, which cancellation will produce below.';
+      } else {
+        var dir = e>s ? 'right-pointing' : 'left-pointing';
+        status.textContent=dir+' \u00B7 length '+fmtLen(len);
+        cap.textContent='Same segment, two possible vectors: swap which end is the start and the direction flips.';
+      }
+    }
+    function wire(handle,get,set){
+      var dragging=false;
+      handle.addEventListener('pointerdown',function(ev){ dragging=true; handle.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+      handle.addEventListener('pointermove',function(ev){
+        if(!dragging) return;
+        var pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+        var loc=pt.matrixTransform(svg.getScreenCTM().inverse());
+        set(clampV(XI(loc.x))); render();
+      });
+      handle.addEventListener('pointerup',function(){ dragging=false; });
+      handle.addEventListener('keydown',function(ev){
+        var step=ev.shiftKey?1:0.1;
+        if(ev.key==='ArrowLeft'){ set(clampV(get()-step)); render(); ev.preventDefault(); }
+        if(ev.key==='ArrowRight'){ set(clampV(get()+step)); render(); ev.preventDefault(); }
+      });
+    }
+    wire(hS,function(){return s;},function(v){s=v;});
+    wire(hE,function(){return e;},function(v){e=v;});
+    document.getElementById('presetK').addEventListener('click',function(){ s=-1; e=-2; render(); });
+    document.getElementById('presetL').addEventListener('click',function(){ s=0; e=2; render(); });
+    render();
+  })();
+
+  /* =====================================================
+     2. VECTOR ADDITION MACHINE
+  ===================================================== */
+  (function(){
+    var svg=document.getElementById('machine');
+    var W=900,Y=190,PAD=48,MIN=-6,MAX=6;
+    var X=drawAxis(svg,{min:MIN,max:MAX,y:Y,pad:PAD,w:W});
+    var status=document.getElementById('machineStatus');
+    var cap=document.getElementById('machineCap');
+    var xVal=document.getElementById('xVal'), yVal=document.getElementById('yVal');
+    var slideBtn=document.getElementById('slideBtn');
+
+    var gX=el('g',{},svg), gY=el('g',{},svg), gSum=el('g',{},svg);
+    var YX=Y-22, YFLOAT=Y-96, YLAND=Y-54;
+
+    var x=3, y=-1, state='apart', running=false;
+    var LIM=3;
+    function clampXY(v){ return Math.max(-LIM,Math.min(LIM,Math.round(v*10)/10)); }
+
+    function drawX(){
+      clear(gX);
+      if (Math.abs(x)>1e-9){
+        drawVector(gX,X(0),X(x),YX,TEAL);
+        vecLabelSVG(gX,(X(0)+X(x))/2,YX-22,'x','a',TEAL);
+      } else {
+        el('circle',{cx:X(0),cy:YX,r:5,fill:TEAL},gX);
+        var t=el('text',{'class':'ptlab a',x:X(0),y:YX-22},gX);
+        t.textContent='zero vector';
+      }
+    }
+    function drawYAt(tail,height){
+      clear(gY);
+      if (Math.abs(y)>1e-9){
+        drawVector(gY,X(tail),X(tail+y),height,BRASS);
+        vecLabelSVG(gY,(X(tail)+X(tail+y))/2,height-22,'y','b',BRASS);
+      } else {
+        el('circle',{cx:X(tail),cy:height,r:5,fill:BRASS},gY);
+        var t=el('text',{'class':'ptlab b',x:X(tail),y:height-22},gY);
+        t.textContent='zero vector';
+      }
+    }
+    function keyObservationText(){
+      var lx=Math.abs(x), ly=Math.abs(y);
+      if (lx<1e-9 && ly<1e-9) return 'Both vectors are the zero vector.';
+      if (lx<1e-9) return vec('x')+' is the zero vector, so the sum is just '+vec('y')+'.';
+      if (ly<1e-9) return vec('y')+' is the zero vector, so the sum is just '+vec('x')+'.';
+      var sameDir = (x>0)===(y>0);
+      if (sameDir){
+        return 'Same direction: lengths add, '+fmtLen(lx)+' + '+fmtLen(ly)+' = '+fmtLen(lx+ly)+'. Key Observation (ii).';
+      }
+      if (Math.abs(lx-ly)<1e-9){
+        return 'Opposite directions, equal lengths: '+vec('x')+' + '+vec('x*')+' = the zero vector. Cancellation (p. 384).';
+      }
+      var longer = lx>ly ? vec('x') : vec('y');
+      var dirWord = ((lx>ly ? x : y) > 0) ? 'right-pointing' : 'left-pointing';
+      return 'Different directions: length is the difference, '+fmtLen(Math.max(lx,ly))+' \u2212 '+fmtLen(Math.min(lx,ly))+' = '+fmtLen(Math.abs(lx-ly))+'; direction follows the longer vector ('+longer+', '+dirWord+'). Key Observation (i) and (ii).';
+    }
+    function renderApart(){
+      state='apart'; clear(gSum);
+      drawX(); drawYAt(0,YFLOAT);
+      xVal.textContent=starLabel(x); yVal.textContent=starLabel(y);
+      status.textContent=starLabel(x)+' + '+starLabel(y)+' = ?';
+      cap.innerHTML=vec('x')+' sits on the line; '+vec('y')+' floats above with its tail at 0. Slide '+vec('y')+' until its tail rests at x.';
+      slideBtn.disabled=false;
+    }
+    function renderJoined(){
+      state='joined';
+      var s=Math.round((x+y)*10)/10;
+      drawX(); drawYAt(x,YLAND);
+      clear(gSum);
+      el('line',{x1:X(s),y1:YLAND+10,x2:X(s),y2:Y-6,stroke:INK,'stroke-width':2},gSum);
+      el('path',{d:'M '+X(s)+' '+(Y-4)+' l -5 -9 l 10 0 Z',fill:INK},gSum);
+      el('circle',{cx:X(s),cy:Y,r:6,fill:INK},gSum);
+      var t=el('text',{'class':'ptlab sum',x:X(s),y:Y+52},gSum);
+      t.textContent='x + y = '+starLabel(s);
+      status.textContent=starLabel(x)+' + '+starLabel(y)+' = '+starLabel(s);
+      cap.innerHTML=keyObservationText();
+    }
+    function slide(){
+      if (state==='joined'||running) return;
+      if (reduce){ renderJoined(); return; }
+      running=true; slideBtn.disabled=true;
+      var t0=null,DUR=700;
+      function run(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min((ts-t0)/DUR,1);
+        var e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+        drawYAt(x*e, YFLOAT+(YLAND-YFLOAT)*e);
+        if(p<1) requestAnimationFrame(run);
+        else { running=false; renderJoined(); }
+      }
+      requestAnimationFrame(run);
+    }
+
+    document.getElementById('xPlus').onclick=function(){ x=clampXY(x+0.5); renderApart(); };
+    document.getElementById('xMinus').onclick=function(){ x=clampXY(x-0.5); renderApart(); };
+    document.getElementById('yPlus').onclick=function(){ y=clampXY(y+0.5); renderApart(); };
+    document.getElementById('yMinus').onclick=function(){ y=clampXY(y-0.5); renderApart(); };
+    slideBtn.onclick=slide;
+    document.getElementById('resetBtn').onclick=renderApart;
+    document.getElementById('ex1').onclick=function(){ x=3; y=-1; renderApart(); };
+    document.getElementById('ex2').onclick=function(){ x=-3; y=1.2; renderApart(); };
+    document.getElementById('exCancel').onclick=function(){ y=-x; renderApart(); };
+    document.getElementById('exSwap').onclick=function(){ var t=x; x=y; y=t; renderApart(); };
+
+    renderApart();
+  })();
+})();
+</script>

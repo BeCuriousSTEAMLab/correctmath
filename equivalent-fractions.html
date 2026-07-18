@@ -1,0 +1,304 @@
+<!-- Lesson 04 — Equivalent Fractions. For correctmath.io.
+     Self-contained: no build step, no external JS. Same design system as Lessons 01–06.
+     Source: H. Wu, Understanding Numbers in Elementary School Mathematics, §13.1, Theorem 13.1
+     and Corollary 13.1.1 (quoted with permission).
+     Prose in §1, §3, "On relative size," and the closer is drafted by Claude — swap in your own voice when ready. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equivalent Fractions · correctmath.io</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --vellum:#e9edf1; --vellum-2:#e1e7ec; --grid:#d3dbe2; --paper:#ffffff;
+    --ink:#173552; --ink-soft:#4a647d; --brass:#dd8a26; --brass-soft:#f3dcb4;
+    --teal:#2c7a7b; --teal-soft:#bfe0df; --rule:#c7d2db;
+    --shadow:0 1px 2px rgba(23,53,82,.06), 0 12px 30px -16px rgba(23,53,82,.25);
+    --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --body:'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink); font-family:var(--body); line-height:1.6; font-size:17px;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(180deg, var(--vellum), var(--vellum-2));
+    background-attachment:fixed;
+  }
+  .wrap{max-width:940px; margin:0 auto; padding:0 24px}
+
+  header.site{display:flex; align-items:baseline; justify-content:space-between; padding:26px 0 22px; gap:16px; flex-wrap:wrap}
+  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink); font-size:15px; text-decoration:none}
+  .brand b{color:var(--brass)}
+  .site nav a{font-family:var(--mono); font-size:13px; color:var(--ink-soft); letter-spacing:.03em; text-decoration:none; border-bottom:1px solid var(--rule)}
+  .site nav a:hover{color:var(--ink); border-color:var(--brass)}
+
+  .eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); font-weight:600; margin:0 0 14px}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(38px,6.6vw,62px); line-height:1.04; letter-spacing:-.02em; margin:0 0 16px}
+  .lede{font-size:clamp(18px,2.4vw,21px); max-width:62ch; color:var(--ink); margin:0 0 6px}
+  .hero{padding:14px 0 8px}
+
+  .stage{background:var(--paper); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--shadow); padding:22px 22px 18px; margin:26px 0}
+  .stage svg{display:block; width:100%; height:auto}
+  .stage .cap{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); letter-spacing:.02em; margin:4px 2px 0}
+
+  .controls{display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; align-items:center}
+  .slidewrap{display:flex; align-items:center; gap:12px; font-family:var(--mono); font-size:14px; flex:1; min-width:220px}
+  .slidewrap input[type=range]{flex:1; accent-color:var(--brass)}
+  .cval{font-weight:700; font-size:17px; color:var(--brass); min-width:26px; text-align:center}
+  .status{font-family:var(--mono); font-size:14px; color:var(--ink); font-weight:600}
+
+  .chain{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 4px}
+  .chain button{font-family:var(--mono); font-size:14px; font-weight:600; background:var(--paper); border:1.5px solid var(--rule); border-radius:8px; padding:7px 12px; cursor:pointer; color:var(--ink-soft)}
+  .chain button:hover{border-color:var(--brass); color:var(--ink)}
+  .chain button.active{background:var(--brass); border-color:var(--brass); color:#3a2403}
+
+  /* stacked fraction: numerator / bar / denominator, real fraction typesetting */
+  .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 3px; line-height:1.05}
+  .frac .num, .frac .den{font-family:var(--mono); font-weight:700; font-size:17px; padding:0 2px}
+  .frac .bar{width:100%; height:2px; background:currentColor; margin:2px 0}
+  .frac.small .num, .frac.small .den{font-size:14px}
+  .opsym{font-family:var(--mono); font-weight:700; font-size:17px; margin:0 6px; color:var(--ink-soft)}
+
+  .eqrow{display:flex; flex-wrap:wrap; gap:14px; margin-top:16px}
+  .eqbox{flex:1; min-width:230px; background:var(--vellum); border:1px solid var(--rule); border-radius:12px; padding:12px 14px; text-align:center}
+  .eqbox .lbl{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px}
+  .eqbox.up .lbl{color:var(--teal)} .eqbox.down .lbl{color:var(--brass)}
+  .eqbox .eqline{display:flex; align-items:center; justify-content:center; flex-wrap:wrap}
+  .lowest{font-family:var(--mono); font-size:12px; color:var(--teal); margin-top:8px; font-weight:600}
+
+  section.prose{padding:14px 0 4px}
+  h2{font-family:var(--disp); font-weight:600; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.01em; margin:38px 0 12px}
+  p{margin:0 0 16px; max-width:64ch}
+  .prose b{font-weight:600}
+
+  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
+  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
+  .defn p{margin:0 0 8px; font-size:16.5px; line-height:1.58; max-width:64ch}
+  .defn p:last-child{margin-bottom:0}
+  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px}
+  .defn .center{text-align:center; font-family:var(--mono); font-weight:600; font-size:18px; margin:12px 0}
+
+  footer.site{border-top:1px solid var(--rule); margin-top:48px; padding:26px 0 56px; font-family:var(--mono); font-size:13px; color:var(--ink-soft); display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  footer.site a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
+  .next-link{display:inline-block; font-family:var(--mono); font-size:15px; font-weight:600; color:var(--ink); text-decoration:none; border:1.5px solid var(--brass); border-radius:9px; padding:10px 16px; margin-top:4px}
+  .next-link:hover{background:var(--brass); color:#3a2403}
+
+  .axis{stroke:var(--ink); stroke-width:2; fill:none}
+  .tick{stroke:var(--ink-soft); stroke-width:1}
+  .num{font-family:var(--mono); font-weight:500; font-size:13px; fill:var(--ink-soft); text-anchor:middle}
+  .subtick{stroke:#7d8ba0; stroke-width:1.5; stroke-opacity:.85}
+</style>
+
+<div class="wrap">
+  <header class="site">
+    <a class="brand" href="/">correct<b>math</b>.io</a>
+    <nav><a href="/fractions.html">&larr; Lesson 03 · Fractions, as Points</a></nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Lesson 04 · Wu, §13.1</p>
+    <h1>Equivalent Fractions</h1>
+    <p class="lede">2/3, 4/6, 6/9 &hellip; these aren&rsquo;t different fractions that happen to be &ldquo;equal.&rdquo;
+      They are one point on the number line, written with finer and finer subdivisions. Once you see that, there
+      is only one idea to learn here — not two rules to memorize.</p>
+  </div>
+
+  <section class="prose">
+    <h2>1 · Same point, finer cuts</h2>
+    <p>Drag the slider to set <b>c</b>. Watch two things at once: the subdivisions of the unit segment get finer
+      as c climbs, and the dot marking 2/3 <b>never moves</b>. Its position was fixed once, at the start — the
+      slider only changes how the line is cut, never where the point sits.</p>
+  </section>
+
+  <div class="stage">
+    <svg id="line" viewBox="0 0 900 170" role="img"
+         aria-label="Number line from 0 to 1, subdivided into 3c equal parts. A fixed dot marks the point 2/3. As c increases, the subdivisions get finer but the dot's position never changes."></svg>
+    <p class="cap" id="lineCap"></p>
+    <div class="controls">
+      <div class="slidewrap">
+        <span>c =</span>
+        <input type="range" id="cSlider" min="1" max="9" step="1" value="1">
+        <span class="cval" id="cVal">1</span>
+      </div>
+      <span class="status" id="status"></span>
+    </div>
+
+    <div class="eqrow">
+      <div class="eqbox up">
+        <div class="lbl">Theorem 13.1 &middot; build up (&times; c/c)</div>
+        <div class="eqline" id="eqUp"></div>
+      </div>
+      <div class="eqbox down">
+        <div class="lbl">Corollary &middot; reduce (&divide; c/c)</div>
+        <div class="eqline" id="eqDown"></div>
+        <div class="lowest" id="lowestNote" style="visibility:hidden">already in lowest terms</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cap" style="margin:-6px 0 18px">Wu&rsquo;s own chain (p. 204) — click any term to jump the slider there:</p>
+  <div class="chain" id="chain"></div>
+
+  <section class="prose">
+    <h2>2 · One law, read in two directions</h2>
+    <p>Wu states a single theorem. Reading it left to right builds bigger, finer names for the same fraction.
+      Reading the identical equation right to left is what students call &ldquo;reducing.&rdquo; It is not a second
+      procedure — it is the same equality, run backwards.</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">Theorem 13.1 &middot; H. Wu</p>
+    <p>&ldquo;For any fraction <i>m</i>/<i>n</i> and any nonzero whole number <i>c</i>,&rdquo;</p>
+    <p class="center" style="display:flex; align-items:center; justify-content:center; gap:10px">
+      <span class="frac"><span class="num">m</span><span class="bar"></span><span class="den">n</span></span>
+      <span>=</span>
+      <span class="frac"><span class="num">cm</span><span class="bar"></span><span class="den">cn</span></span>
+    </p>
+    <p><span class="src">&mdash; Understanding Numbers in Elementary School Mathematics, §13.1, p. 204</span></p>
+  </div>
+
+  <div class="defn">
+    <p class="lbl">Corollary 13.1.1 &middot; H. Wu</p>
+    <p>&ldquo;For any fraction <i>k</i>/<i>l</i> and any nonzero whole number <i>c</i> that divides both
+      <i>k</i> and <i>l</i>,&rdquo;</p>
+    <p class="center" style="display:flex; align-items:center; justify-content:center; gap:10px">
+      <span class="frac"><span class="num">k</span><span class="bar"></span><span class="den">l</span></span>
+      <span>=</span>
+      <span class="frac"><span class="num">k&divide;c</span><span class="bar"></span><span class="den">l&divide;c</span></span>
+    </p>
+    <p><span class="src">&mdash; §13.1, p. 205 — the Cancellation Law</span></p>
+  </div>
+
+  <section class="prose">
+    <h2>3 · Why reducing feels harder</h2>
+    <p>Building up only asks you to <i>pick</i> a c. Reducing asks you to <i>find</i> one — the common divisor
+      hiding inside both numerator and denominator. You can eyeball that 2 and 3 share no factor, or that 4 and 6
+      share a 2. You cannot eyeball it for Wu&rsquo;s harder example, 253/161 (p. 205) — same law, but the reverse
+      direction hides its input. That gap — knowing the law
+      but not being able to find c by eye — is exactly the problem the Euclidean algorithm exists to solve, and it&rsquo;s
+      where this series goes next.</p>
+  </section>
+
+  <div class="defn">
+    <p class="lbl">On relative size &middot; note</p>
+    <p>Two fractions are equal exactly when they name the same point on the number line — no matter how the
+      numerator and denominator are written. That is the whole content of Theorem 13.1: it doesn&rsquo;t just say the
+      two fractions are &ldquo;the same size,&rdquo; it says <i>why</i>, by pointing at the one dot both names refer to.</p>
+  </div>
+
+  <section class="prose">
+    <h2>Why teach it this way</h2>
+    <p>The usual approach teaches &ldquo;simplifying&rdquo; and &ldquo;finding common denominators&rdquo; as two separate skills,
+      each with its own steps to memorize. Here there is one theorem, and the slider makes both directions the same
+      motion: drag right, you&rsquo;re building up; drag left, you&rsquo;re reducing. What a student keeps isn&rsquo;t a
+      procedure — it&rsquo;s the image of a dot that refuses to move no matter how finely the line gets cut.</p>
+
+    <p><a class="next-link" href="#">Next lesson: coming soon &rarr;</a></p>
+  </section>
+
+  <footer class="site">
+    <span>Built by Peter Celona &middot; <a href="/fractions.html">Lesson 03: Fractions, as Points</a><br>
+      Quotations from H. Wu, <i>Understanding Numbers in Elementary School Mathematics</i> (§13.1, pp. 204&ndash;205), used with permission.</span>
+    <span><a href="/">correctmath.io</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SVGNS='http://www.w3.org/2000/svg';
+  var css=getComputedStyle(document.documentElement);
+  var TEAL=css.getPropertyValue('--teal').trim()||'#2c7a7b';
+  var BRASS=css.getPropertyValue('--brass').trim()||'#dd8a26';
+  var INK=css.getPropertyValue('--ink').trim()||'#173552';
+
+  function el(n,at,parent){ var e=document.createElementNS(SVGNS,n); for(var k in at)e.setAttribute(k,at[k]); if(parent)parent.appendChild(e); return e; }
+  function clear(g){ while(g.firstChild) g.removeChild(g.firstChild); }
+  function gcd(a,b){ return b===0 ? a : gcd(b,a%b); }
+
+  var svg=document.getElementById('line');
+  var W=900, Y=90, PAD=60;
+  function X(v){ return PAD + v*(W-2*PAD); } // v in [0,1]
+
+  // static axis 0..1
+  el('line',{'class':'axis',x1:X(0)-10,y1:Y,x2:X(1)+10,y2:Y},svg);
+  el('text',{'class':'num',x:X(0),y:Y+30},svg).textContent='0';
+  el('text',{'class':'num',x:X(1),y:Y+30},svg).textContent='1';
+  var subGroup=el('g',{},svg);
+  var chainLabel=el('text',{'class':'num',x:X(2/3),y:Y-46,fill:BRASS,'font-weight':'700','font-size':'16'},svg);
+
+  // fixed dot: position computed once, from the untouched constant 2/3
+  var DOT_X = X(2/3);
+  el('line',{x1:DOT_X,y1:Y-14,x2:DOT_X,y2:Y+14,stroke:TEAL,'stroke-width':2},svg);
+  el('circle',{cx:DOT_X,cy:Y,r:8,fill:TEAL,stroke:'#fff','stroke-width':2},svg);
+
+  var cSlider=document.getElementById('cSlider');
+  var cVal=document.getElementById('cVal');
+  var status=document.getElementById('status');
+  var lineCap=document.getElementById('lineCap');
+  var eqUp=document.getElementById('eqUp');
+  var eqDown=document.getElementById('eqDown');
+  var lowestNote=document.getElementById('lowestNote');
+  var chainWrap=document.getElementById('chain');
+
+  var CHAIN_MAX=9; // 2/3, 4/6, ... 18/27
+  for (var i=1;i<=CHAIN_MAX;i++){
+    (function(c){
+      var b=document.createElement('button');
+      b.type='button';
+      b.textContent=(2*c)+'/'+(3*c);
+      b.addEventListener('click',function(){ cSlider.value=c; render(); });
+      chainWrap.appendChild(b);
+    })(i);
+  }
+
+  function fracHTML(num,den,small){
+    return '<span class="frac'+(small?' small':'')+'"><span class="num">'+num+'</span><span class="bar"></span><span class="den">'+den+'</span></span>';
+  }
+
+  function render(){
+    var c=parseInt(cSlider.value,10);
+    cVal.textContent=c;
+
+    clear(subGroup);
+    var n = 3*c; // total subdivisions
+    for (var k=1;k<n;k++){
+      var v=k/n;
+      var isThird = (k % c === 0); // aligns with the original thirds
+      el('line',{'class': isThird ? 'tick' : 'subtick',
+                 x1:X(v), y1: isThird ? Y-9 : Y-6,
+                 x2:X(v), y2: isThird ? Y+9 : Y+6},subGroup);
+    }
+    chainLabel.textContent = (2*c)+'/'+(3*c);
+
+    // Build-up: 2/3 × c/c = 2c/3c  (as real numbers, e.g. 2/3 × 3/3 = 6/9)
+    eqUp.innerHTML =
+      fracHTML(2,3) + '<span class="opsym">&times;</span>' + fracHTML(c,c,true) +
+      '<span class="opsym">=</span>' + fracHTML(2*c,3*c);
+
+    // Reduce: 2c/3c ÷ c/c = 2/3
+    eqDown.innerHTML =
+      fracHTML(2*c,3*c) + '<span class="opsym">&divide;</span>' + fracHTML(c,c,true) +
+      '<span class="opsym">=</span>' + fracHTML(2,3);
+
+    lowestNote.style.visibility = (c===1) ? 'visible' : 'hidden';
+
+    status.textContent = 'point stays at 2/3 \u00B7 now written as ' + (2*c)+'/'+(3*c) + ' \u00B7 ' + n + ' equal parts';
+    lineCap.textContent = c===1
+      ? 'c = 1: the unit is cut into thirds — this is 2/3 in lowest terms.'
+      : 'the unit is now cut into ' + n + ' equal parts, but the dot sits exactly where it always did.';
+
+    Array.prototype.forEach.call(chainWrap.children,function(btn,idx){
+      btn.classList.toggle('active', idx+1===c);
+    });
+  }
+  cSlider.addEventListener('input', render);
+  render();
+})();
+</script>

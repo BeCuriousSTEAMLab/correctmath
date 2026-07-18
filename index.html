@@ -1,24 +1,24 @@
-<!-- The Number Line — an interactive lesson for correctmath.io
-     Self-contained: no build step, no external JS. Upload as-is.
-     Fonts load from Google Fonts with system fallbacks. -->
+<!-- correctmath.io — landing page.
+     Deploy as index.html. IMPORTANT: the current root lesson (The Number Line)
+     must be renamed to number-line.html at the same time, and its footer links checked.
+     Self-contained: no build step, no external JS. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Number Line · correctmath.io</title>
+<title>correctmath.io · Lessons in correct, visual mathematics</title>
+<meta name="description" content="Elementary mathematics rebuilt the way H. Wu teaches it: precise definitions first, the number line as the spine, every idea shown before it is symbolized.">
+<meta property="og:title" content="correctmath.io">
+<meta property="og:description" content="Lessons in correct, visual mathematics — definitions first, on the number line, in Wu's own words.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://correctmath.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 
 <style>
   :root{
-    --vellum:#e9edf1;        /* cool paper ground            */
-    --vellum-2:#e1e7ec;
-    --grid:#d3dbe2;          /* faint engineering grid       */
-    --paper:#ffffff;         /* content cards                */
-    --ink:#173552;           /* deep drafting-blue line/text */
-    --ink-soft:#4a647d;      /* secondary text / ticks       */
-    --brass:#dd8a26;         /* THE UNIT — the one accent    */
-    --brass-soft:#f3dcb4;
-    --rule:#c7d2db;
+    --vellum:#e9edf1; --vellum-2:#e1e7ec; --grid:#d3dbe2; --paper:#ffffff;
+    --ink:#173552; --ink-soft:#4a647d; --brass:#dd8a26; --brass-soft:#f3dcb4;
+    --teal:#2c7a7b; --rule:#c7d2db;
     --shadow:0 1px 2px rgba(23,53,82,.06), 0 12px 30px -16px rgba(23,53,82,.25);
     --disp:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
     --body:'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -28,8 +28,7 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0; color:var(--ink); font-family:var(--body);
-    line-height:1.6; font-size:17px;
+    margin:0; color:var(--ink); font-family:var(--body); line-height:1.6; font-size:17px;
     background:
       linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
       linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
@@ -38,114 +37,67 @@
   }
   .wrap{max-width:940px; margin:0 auto; padding:0 24px}
 
-  /* ---- site header ---- */
-  header.site{display:flex; align-items:baseline; justify-content:space-between;
-    padding:26px 0 22px; gap:16px; flex-wrap:wrap}
-  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em;
-    color:var(--ink); font-size:15px; text-decoration:none}
+  header.site{display:flex; align-items:baseline; justify-content:space-between; padding:26px 0 8px; gap:16px; flex-wrap:wrap}
+  .brand{font-family:var(--mono); font-weight:600; letter-spacing:.02em; color:var(--ink); font-size:15px; text-decoration:none}
   .brand b{color:var(--brass)}
   .site nav{font-family:var(--mono); font-size:13px; color:var(--ink-soft); letter-spacing:.03em}
 
-  /* ---- hero ---- */
-  .eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--brass); font-weight:600; margin:0 0 14px}
-  h1{font-family:var(--disp); font-weight:700; font-size:clamp(40px,7vw,68px);
-    line-height:1.02; letter-spacing:-.02em; margin:0 0 16px}
-  .lede{font-size:clamp(18px,2.4vw,21px); max-width:62ch; color:var(--ink); margin:0 0 6px}
-  .hero{padding:18px 0 8px}
+  /* hero */
+  .hero{padding:34px 0 6px; text-align:left}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(38px,6.8vw,64px); line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; max-width:20ch}
+  h1 em{font-style:normal; color:var(--brass)}
+  .lede{font-size:clamp(18px,2.4vw,21px); max-width:56ch; margin:0 0 10px}
+  .lede b{font-weight:600}
+  .sub{font-family:var(--serif); font-style:italic; font-size:clamp(17px,2.2vw,20px); color:var(--ink-soft); max-width:52ch; margin:0 0 6px}
 
-  /* ---- interactive stage ---- */
-  .stage{background:var(--paper); border:1px solid var(--rule); border-radius:16px;
-    box-shadow:var(--shadow); padding:22px 22px 18px; margin:26px 0}
-  .stage svg{display:block; width:100%; height:auto}
-  .stage .cap{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft);
-    letter-spacing:.02em; margin:4px 2px 0}
+  /* hero line figure */
+  .heroline{background:var(--paper); border:1px solid var(--rule); border-radius:16px; box-shadow:var(--shadow); padding:20px 20px 12px; margin:26px 0 8px}
+  .heroline svg{display:block; width:100%; height:auto}
+  .heroline .cap{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin:4px 2px 0}
 
-  .controls{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center}
-  button.ctrl{font-family:var(--mono); font-size:13.5px; font-weight:500;
-    color:var(--ink); background:var(--paper); border:1.5px solid var(--ink);
-    border-radius:9px; padding:9px 14px; cursor:pointer; letter-spacing:.01em;
-    transition:transform .08s ease, background .15s ease, color .15s ease, box-shadow .15s ease}
-  button.ctrl:hover:not(:disabled){background:var(--ink); color:var(--paper)}
-  button.ctrl:active:not(:disabled){transform:translateY(1px)}
-  button.ctrl.primary{border-color:var(--brass); background:var(--brass); color:#3a2403}
-  button.ctrl.primary:hover:not(:disabled){background:#c9791b; border-color:#c9791b; color:#fff}
-  button.ctrl:disabled{opacity:.34; cursor:not-allowed}
-  button.ctrl:focus-visible{outline:3px solid var(--brass-soft); outline-offset:2px}
-  .status{font-family:var(--mono); font-size:13px; color:var(--ink-soft); margin-left:auto}
+  /* principles */
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0 8px}
+  @media (max-width:720px){ .grid3{grid-template-columns:1fr} }
+  .prin{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:18px 20px}
+  .prin h3{font-family:var(--disp); font-size:18px; font-weight:600; margin:0 0 8px}
+  .prin p{margin:0; font-size:14.5px; color:var(--ink-soft); line-height:1.55}
 
-  /* ---- prose ---- */
-  section.prose{padding:14px 0 4px}
-  h2{font-family:var(--disp); font-weight:600; font-size:clamp(24px,3.4vw,32px);
-    letter-spacing:-.01em; margin:38px 0 12px}
-  p{margin:0 0 16px; max-width:64ch}
-  .prose b{font-weight:600}
+  h2{font-family:var(--disp); font-weight:600; font-size:clamp(24px,3.4vw,32px); letter-spacing:-.01em; margin:44px 0 6px}
+  .h2sub{font-family:var(--mono); font-size:13px; color:var(--ink-soft); margin:0 0 18px}
 
-  /* convention vs theorem — a labeled distinction, not decoration */
-  .note{display:grid; grid-template-columns:auto 1fr; gap:14px 16px;
-    background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--brass);
-    border-radius:0 12px 12px 0; padding:16px 18px; margin:8px 0 22px; box-shadow:var(--shadow)}
-  .note .tag{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em;
-    text-transform:uppercase; color:var(--brass); padding-top:3px; white-space:nowrap}
-  .note p{margin:0; font-size:15.5px}
+  /* lesson index */
+  .lessons{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:10px 0 8px}
+  @media (max-width:640px){ .lessons{grid-template-columns:1fr} }
+  a.lesson{display:block; background:var(--paper); border:1px solid var(--rule); border-radius:14px; box-shadow:var(--shadow); padding:18px 20px 16px; text-decoration:none; color:var(--ink); transition:transform .12s ease, border-color .15s}
+  a.lesson:hover{transform:translateY(-2px); border-color:var(--brass)}
+  a.lesson .no{font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.12em; color:var(--brass)}
+  a.lesson .ttl{font-family:var(--disp); font-size:19px; font-weight:600; margin:6px 0 6px; line-height:1.25}
+  a.lesson .desc{font-size:14px; color:var(--ink-soft); line-height:1.5; margin:0}
+  a.lesson .src{font-family:var(--mono); font-size:11.5px; color:var(--brass); margin-top:10px; display:block}
 
-  .defn{background:var(--paper); border:1px solid var(--rule); border-top:3px solid var(--brass); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin:26px 0}
-  .defn .lbl{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--brass); margin:0 0 10px}
-  .defn p{margin:0; font-size:16.5px; line-height:1.58; max-width:64ch}
-  .defn .src{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--brass); margin-top:14px}
-  .note .tag.fact{color:var(--ink)}
+  /* evidence */
+  .evidence{background:var(--paper); border:1px solid var(--rule); border-left:4px solid var(--brass); border-radius:0 14px 14px 0; box-shadow:var(--shadow); padding:20px 22px; margin:14px 0}
+  .evidence ul{list-style:none; margin:0; padding:0}
+  .evidence li{padding:10px 0; font-size:15px; line-height:1.55; border-bottom:1px dashed var(--rule)}
+  .evidence li:last-child{border-bottom:none}
+  .evidence b{font-weight:600}
+  .evidence a{color:var(--ink); border-bottom:1px solid var(--brass); text-decoration:none}
+  .evidence .cite{font-family:var(--mono); font-size:12px; color:var(--ink-soft)}
 
-  /* Wu's words — given their own register */
-  .quote{font-family:var(--serif); font-style:italic; font-size:clamp(20px,2.7vw,26px);
-    line-height:1.42; color:var(--ink); max-width:58ch; margin:26px 0;
-    padding:2px 0 2px 22px; border-left:3px solid var(--brass)}
-  .quote .by{display:block; font-family:var(--mono); font-style:normal; font-size:12.5px;
-    letter-spacing:.04em; color:var(--brass); margin-top:11px}
-  .quote.epigraph{font-size:clamp(19px,2.4vw,23px); margin-top:22px}
-  .q-inline{font-family:var(--serif); font-style:italic; color:var(--ink)}
-  .next-link{display:inline-block; font-family:var(--mono); font-size:15px; font-weight:600; color:var(--ink); text-decoration:none; border:1.5px solid var(--brass); border-radius:9px; padding:10px 16px; margin-top:4px; transition:background .15s, color .15s}
-  .next-link:hover{background:var(--brass); color:#3a2403}
+  .quote{font-family:var(--serif); font-style:italic; font-size:clamp(19px,2.5vw,24px); line-height:1.42; color:var(--ink); max-width:56ch; margin:30px 0; padding:2px 0 2px 22px; border-left:3px solid var(--brass)}
+  .quote .by{display:block; font-family:var(--mono); font-style:normal; font-size:12.5px; letter-spacing:.04em; color:var(--brass); margin-top:11px}
 
-  /* slider demo */
-  .sliderbar{display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:wrap}
-  .sliderbar label{font-family:var(--mono); font-size:13px; color:var(--ink-soft)}
-  input[type=range]{-webkit-appearance:none; appearance:none; height:4px; border-radius:4px;
-    background:var(--rule); flex:1; min-width:160px}
-  input[type=range]:focus-visible{outline:3px solid var(--brass-soft); outline-offset:6px}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px;
-    border-radius:50%; background:var(--brass); border:2px solid #fff; box-shadow:var(--shadow); cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%;
-    background:var(--brass); border:2px solid #fff; cursor:pointer}
-  .readout{font-family:var(--mono); font-size:13px; color:var(--ink); min-width:128px}
-
-  /* footer */
-  footer.site{border-top:1px solid var(--rule); margin-top:48px; padding:26px 0 56px;
-    font-family:var(--mono); font-size:13px; color:var(--ink-soft); display:flex;
-    justify-content:space-between; gap:14px; flex-wrap:wrap}
+  footer.site{border-top:1px solid var(--rule); margin-top:44px; padding:26px 0 56px; font-family:var(--mono); font-size:13px; color:var(--ink-soft); line-height:1.7}
   footer.site a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--brass)}
 
-  /* svg helpers */
   .axis{stroke:var(--ink); stroke-width:2; fill:none}
-  .tick{stroke:var(--ink-soft); stroke-width:2}
+  .tick{stroke:var(--ink-soft); stroke-width:1.5}
   .tick0{stroke:var(--ink); stroke-width:2.5}
-  .num{font-family:var(--mono); font-weight:500; font-size:20px; fill:var(--ink); text-anchor:middle}
-  .num0{fill:var(--ink)}
-  .unitbar{stroke:var(--brass); stroke-width:7; stroke-linecap:round; fill:none}
-  .progress{stroke:var(--brass); stroke-width:3; fill:none; opacity:.55; stroke-linecap:round}
-  .bracetxt{font-family:var(--mono); font-size:13px; fill:var(--brass); font-weight:600; text-anchor:middle}
-  .pt{fill:var(--brass)}
-  #unitRef,#unitRefTxt,#mover{transition:opacity .28s ease}
-  .drop{transition:opacity .3s ease, transform .3s cubic-bezier(.2,.9,.3,1.2)}
-  .drop.hidden{opacity:0; transform:translateY(-8px)}
+  .num{font-family:var(--mono); font-weight:500; font-size:14px; fill:var(--ink-soft); text-anchor:middle}
+  .num0{fill:var(--ink); font-weight:600}
+  .plab{font-family:var(--mono); font-weight:600; font-size:13px; text-anchor:middle}
 
-  @media (max-width:560px){
-    body{font-size:16px}
-    .status{margin-left:0; width:100%}
-    .num{font-size:17px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none !important; transition:none !important}
-  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
 </style>
 
 <div class="wrap">
@@ -155,113 +107,106 @@
   </header>
 
   <div class="hero">
-    <p class="eyebrow">Lesson 01 · From a single choice</p>
-    <h1>The Number Line</h1>
-    <p class="lede">A line is just a line. Nothing on it is special — until you choose
-      one point to call <b>0</b>, and a second to call <b>1</b>. That one choice fixes
-      every whole number. Build it yourself below.</p>
+    <h1>School mathematics, rebuilt from its <em>definitions</em>.</h1>
+    <p class="lede">If the rules never quite connected — invert-and-multiply, &ldquo;two negatives make a positive&rdquo; —
+      that wasn&rsquo;t you, and it wasn&rsquo;t your teachers. The mathematician H.&nbsp;Wu calls the culprit
+      <b>Textbook School Mathematics</b>: rules stripped of the definitions that give them meaning.
+      Presented that way, math isn&rsquo;t merely hard. It is, in Wu&rsquo;s word, <b>unlearnable</b>.</p>
+    <p class="sub">These lessons rebuild the subject his way: one number line, precise definitions,
+      and pictures that show each idea before any symbol asks you to trust it.</p>
   </div>
 
-  <div class="defn">
-    <p class="lbl">Definition &middot; H. Wu</p>
-    <p>&ldquo;&hellip;a line each of whose points is uniquely identified with a (real) number.&rdquo;
-      <span class="src">&mdash; Understanding Numbers in Elementary School Mathematics, &sect;1.4 (quoted with permission)</span></p>
+  <!-- hero figure: the whole curriculum on one line -->
+  <div class="heroline">
+    <svg id="heroSvg" viewBox="0 0 900 150" role="img"
+         aria-label="Animation: an empty line appears; a point is named 0, a second point is named 1, fixing the unit segment; the unit is laid down again and again, building the whole numbers 2, 3, 4."></svg>
+    <p class="cap">It all starts here. Choose 0. Choose 1 — the segment between them is the unit segment. Lay it down again and again: the whole numbers.</p>
   </div>
 
-  <blockquote class="quote">&ldquo;Fix a horizontal straight line and designate a point on it as 0.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, where every number line begins</span></blockquote>
-
-  <!-- HERO INTERACTIVE: construct the line -->
-  <div class="stage">
-    <svg id="build" viewBox="0 0 900 200" role="img"
-         aria-label="An interactive number line you build by laying down the unit segment.">
-      <line class="axis" id="axisLine" x1="40" y1="120" x2="40" y2="120"/>
-      <g id="buildMarks"></g>
-      <path class="progress drop hidden" id="progress" d=""/>
-      <path class="unitbar" id="unitRef" d="" style="opacity:0"/>
-      <text class="bracetxt" id="unitRefTxt" x="0" y="0" style="opacity:0">1 unit</text>
-      <path class="unitbar" id="mover" d="" style="opacity:0"/>
-    </svg>
-    <p class="cap" id="buildCap">An empty line. Choose where 0 goes to begin.</p>
-
-    <div class="controls">
-      <button class="ctrl" id="b0">Set&nbsp;0</button>
-      <button class="ctrl" id="b1" disabled>Set&nbsp;1 — the unit</button>
-      <button class="ctrl primary" id="bStamp" disabled>Lay down the unit&nbsp;→</button>
-      <button class="ctrl" id="bReset">Reset</button>
-      <span class="status" id="status">Whole numbers placed: 0</span>
+  <div class="grid3">
+    <div class="prin">
+      <h3>Definitions first</h3>
+      <p>Every object is defined before it is used. A number is a point on the line. A fraction is a constructed point — not a pizza slice.</p>
+    </div>
+    <div class="prin">
+      <h3>The picture is the argument</h3>
+      <p>Each lesson is built around an interactive figure. You drag, slide, and reflect; the mathematics happens where you can see it.</p>
+    </div>
+    <div class="prin">
+      <h3>Wu&rsquo;s words, cited</h3>
+      <p>Definitions and theorems are quoted verbatim from <i>Understanding Numbers in Elementary School Mathematics</i>, with the author&rsquo;s permission — section and page.</p>
     </div>
   </div>
 
-  <section class="prose">
-    <p>Watch what just happened. You didn't write the numbers <span style="font-family:var(--mono)">2, 3, 4, 5</span>
-      down one by one — you <b>laid the unit down, end to end</b>, and they appeared where it landed.
-      That's the whole idea: counting is the unit, stamped again and again. The number line turns
-      counting into a picture you can see and measure.</p>
+  <h2>The lessons</h2>
+  <p class="h2sub">One idea each, in order. Every lesson ends with a short note on why it&rsquo;s taught this way.</p>
 
-    <h2>What's a choice, and what isn't</h2>
-    <p>Beginners often think the number line is handed down by nature. Most of it isn't a law —
-      it's a <b>convention</b> we agree on; Wu calls drawing it rightward
-      <span class="q-inline">&ldquo;entirely a matter of convention.&rdquo;</span> But once the conventions are set, the placement of
-      every whole number is forced. Keeping these straight is the difference between memorizing
-      a picture and understanding one.</p>
-
-    <div class="note">
-      <span class="tag">Convention</span>
-      <p>The line is drawn <b>horizontal</b>, and the numbers grow to the <b>right</b>. Nothing
-        mathematical depends on this — flip it or stand it up and the math is identical. We just agree on it.</p>
-      <span class="tag">Convention</span>
-      <p>You may put <b>0</b> anywhere, and you may pick the length of <b>[0, 1]</b> — the unit —
-        to be anything you like.</p>
-      <span class="tag fact">Forced</span>
-      <p>Once 0 and the unit are chosen, <b>every</b> whole number has exactly one home:
-        equally spaced points marching off to the right. You don't get to choose where 2 goes.</p>
-    </div>
-
-    <blockquote class="quote">&ldquo;Once a unit segment has been chosen on a given straight line, all the whole numbers are fixed on the line.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, the one choice that decides everything</span></blockquote>
-
-    <h2>A different unit, the same mathematics</h2>
-    <p>Because the unit's length is yours to pick, a different choice gives a line that <i>looks</i>
-      different — longer or shorter — yet behaves exactly the same. Drag the unit and watch:
-      the picture stretches, but every whole number still lands once, equally spaced.</p>
-  </section>
-
-  <!-- SECOND INTERACTIVE: change the unit -->
-  <div class="stage">
-    <svg id="scale" viewBox="0 0 900 150" role="img"
-         aria-label="A number line whose unit length you can change with a slider.">
-      <line class="axis" x1="40" y1="86" x2="860" y2="86"/>
-      <g id="scaleMarks"></g>
-    </svg>
-    <div class="sliderbar">
-      <label for="unitRange">1 unit =</label>
-      <input type="range" id="unitRange" min="70" max="150" value="100" step="1"
-             aria-label="Length of one unit, in pixels">
-      <span class="readout" id="unitReadout">100 px (your choice)</span>
-    </div>
-    <p class="cap">Stretched or squeezed — the spacing stays uniform and 2 is always twice as far as 1.</p>
+  <div class="lessons">
+    <a class="lesson" href="/number-line.html">
+      <span class="no">Lesson 01</span>
+      <p class="ttl">The Number Line</p>
+      <p class="desc">A line, one point named 0, one point named 1. That single choice of unit builds every whole number.</p>
+      <span class="src">Wu, §1.4</span>
+    </a>
+    <a class="lesson" href="/addition.html">
+      <span class="no">Lesson 02</span>
+      <p class="ttl">Addition, as Length</p>
+      <p class="desc">Lay one segment after another and measure where you land. Addition is concatenation — something you can watch.</p>
+      <span class="src">Wu, §1.4</span>
+    </a>
+    <a class="lesson" href="/fractions.html">
+      <span class="no">Lesson 03</span>
+      <p class="ttl">Fractions, as Points</p>
+      <p class="desc">Cut the unit into n equal parts, lay down m copies. A fraction is the exact point where you land.</p>
+      <span class="src">Wu, §12.2</span>
+    </a>
+    <a class="lesson" href="/equivalent-fractions.html">
+      <span class="no">Lesson 04</span>
+      <p class="ttl">Equivalent Fractions</p>
+      <p class="desc">The Cancellation Law: one theorem, read in both directions, replaces every &ldquo;rule&rdquo; about reducing and expanding.</p>
+      <span class="src">Wu, Thm. 13.1</span>
+    </a>
+    <a class="lesson" href="/rational-numbers.html">
+      <span class="no">Lesson 05</span>
+      <p class="ttl">The Rational Numbers</p>
+      <p class="desc">Reflect every fraction across 0. No negative signs yet — just mirror images, and a reason to want them.</p>
+      <span class="src">Wu, Chs. 25&ndash;26</span>
+    </a>
+    <a class="lesson" href="/vector-addition.html">
+      <span class="no">Lesson 06</span>
+      <p class="ttl">Adding Rational Numbers, as Vectors</p>
+      <p class="desc">Give each number a direction, slide, and read the endpoint. The &ldquo;sign rules&rdquo; become one provable observation.</p>
+      <span class="src">Wu, Ch. 27</span>
+    </a>
   </div>
 
-  <section class="prose">
-    <h2>One honest caution about pictures</h2>
-    <p>It helps to call the finished line a <b>ruler</b> — but that's an <b>analogy</b>, and it's
-      worth saying so out loud. A ruler is a physical object; the number line is the idea of
-      <b>equally spaced points</b> that the ruler happens to illustrate. Good visuals earn their
-      keep by being honest about where the picture ends and the mathematics begins. That principle —
-      visual intuition first, but always grounded in correct mathematics — is what every lesson here is built on.</p>
-  </section>
+  <h2>Why this way</h2>
+  <p class="h2sub">The approach is Wu&rsquo;s. The evidence for its spine — the number line — is broader.</p>
 
-  <section class="prose">
-    <h2>Next: addition, as length</h2>
-    <p>Once the line is a ruler, addition stops being a fact to memorize and becomes something you
-      can see: lay one length after another and measure where you land. That's Lesson 02.</p>
-    <blockquote class="quote">&ldquo;&hellip;addition is simple: concatenate, then measure the length.&rdquo;<span class="by">&mdash; Hung-Hsi Wu, turning arithmetic into geometry</span></blockquote>
-    <p><a class="next-link" href="/addition.html">Read Lesson 02: Addition, as Length &rarr;</a></p>
-  </section>
+  <div class="evidence">
+    <ul>
+      <li><b>Wu&rsquo;s case.</b> Across three decades of <a href="https://math.berkeley.edu/~wu/" rel="noopener">books and essays</a>,
+        Wu argues that school mathematics fails students not because it is too hard, but because its rules are presented
+        without definitions — making it unlearnable as mathematics. These lessons follow his reconstruction step by step.
+        <span class="cite">math.berkeley.edu/~wu</span></li>
+      <li><b>The number line matters.</b> The National Mathematics Advisory Panel identified fraction proficiency as a
+        critical foundation for algebra and pointed to the number line as a central representation for building it.
+        <span class="cite">Foundations for Success, U.S. Dept. of Education, 2008</span></li>
+      <li><b>It predicts the future.</b> In U.S. and U.K. longitudinal data, students&rsquo; fraction knowledge around age 10
+        predicted their algebra and overall math achievement at 16 — even after controlling for IQ, family background,
+        and whole-number arithmetic. <span class="cite">Siegler et al., Psychological Science, 2012</span></li>
+    </ul>
+  </div>
+
+  <blockquote class="quote">&ldquo;The fractions together with their reflected images will be seen to form a number
+    system in the sense that we can perform the four arithmetic operations on them all, in a way that is consistent
+    with the operations already defined on the fractions.&rdquo;
+    <span class="by">&mdash; Hung-Hsi Wu, Understanding Numbers in Elementary School Mathematics, p. 375</span></blockquote>
 
   <footer class="site">
-    <span>Built by Peter Celona &middot; animated with Manim &amp; hand-built for the web<br>
-      Quotations from H. Wu, <i>Understanding Numbers in Elementary School Mathematics</i> (&sect;1.4), used with permission.</span>
-    <span><a href="/">correctmath.io</a></span>
+    <span>Built by Peter Celona &mdash; mathematics educator &amp; project manager, Philadelphia.<br>
+      All quotations from H. Wu, <i>Understanding Numbers in Elementary School Mathematics</i> (AMS, 2011), used with the author&rsquo;s permission.<br>
+      Hand-built for the web: no frameworks, no build step &mdash; just the mathematics.</span>
   </footer>
 </div>
 
@@ -269,143 +214,95 @@
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var SVGNS='http://www.w3.org/2000/svg';
+  var svg=document.getElementById('heroSvg');
+  var css=getComputedStyle(document.documentElement);
+  var BRASS=css.getPropertyValue('--brass').trim()||'#dd8a26';
 
-  /* ============ HERO: build-the-line ============ */
-  var OX = 70, BY = 120, UNIT = 124, NMAX = 5;
-  var xOf = function(n){ return OX + n*UNIT; };
+  function el(n,at,parent){ var e=document.createElementNS(SVGNS,n); for(var k in at)e.setAttribute(k,at[k]); if(parent)parent.appendChild(e); return e; }
+  function clear(g){ while(g.firstChild) g.removeChild(g.firstChild); }
 
-  var axisLine = document.getElementById('axisLine');
-  var marks    = document.getElementById('buildMarks');
-  var unitRef  = document.getElementById('unitRef');
-  var unitRefTxt = document.getElementById('unitRefTxt');
-  var mover    = document.getElementById('mover');
-  var progress = document.getElementById('progress');
-  var cap      = document.getElementById('buildCap');
-  var statusEl = document.getElementById('status');
-  var b0=document.getElementById('b0'), b1=document.getElementById('b1'),
-      bS=document.getElementById('bStamp'), bR=document.getElementById('bReset');
+  var W=900, Y=88, OX=70, UNIT=170, NMAX=4;
+  function X(n){ return OX + n*UNIT; }
+  var XEND=X(NMAX)+56;
 
-  var placed = -1; // highest whole number drawn; -1 = empty
-  var SVGNS = 'http://www.w3.org/2000/svg';
+  var axis=el('line',{'class':'axis',x1:OX-30,y1:Y,x2:OX-30,y2:Y},svg);
+  var head=el('path',{'class':'axis',opacity:0},svg);
+  var marks=el('g',{},svg);                                   // ticks, dots, numerals
+  var unitBar=el('path',{fill:'none',stroke:BRASS,'stroke-width':7,'stroke-linecap':'round',opacity:0},svg);
+  var unitTxt=el('text',{'class':'plab',fill:BRASS,x:(X(0)+X(1))/2,y:Y-24,opacity:0},svg);
+  unitTxt.textContent='the unit segment';
+  var mover=el('path',{fill:'none',stroke:BRASS,'stroke-width':7,'stroke-linecap':'round',opacity:0},svg);
 
-  function el(name, attrs){
-    var e = document.createElementNS(SVGNS, name);
-    for(var k in attrs){ e.setAttribute(k, attrs[k]); }
-    return e;
+  function drawNumber(n){
+    var g=el('g',{},marks);
+    el('line',{'class':n===0?'tick0':'tick',x1:X(n),y1:Y-11,x2:X(n),y2:Y+11},g);
+    el('circle',{cx:X(n),cy:Y,r:4.5,fill:BRASS},g);
+    var t=el('text',{'class':'num'+(n===0?' num0':''),x:X(n),y:Y+34,'font-size':'18'},g);
+    t.textContent=n;
   }
-  function drawNumber(n, animate){
-    var g = el('g', {'class':'drop' + (animate ? ' hidden':'')});
-    var tickCls = n===0 ? 'tick0' : 'tick';
-    g.appendChild(el('line', {'class':tickCls, x1:xOf(n), y1:BY-12, x2:xOf(n), y2:BY+12}));
-    g.appendChild(el('circle', {'class':'pt', cx:xOf(n), cy:BY, r:4.5}));
-    var t = el('text', {'class':'num' + (n===0?' num0':''), x:xOf(n), y:BY+38});
-    t.textContent = n;
-    g.appendChild(t);
-    marks.appendChild(g);
-    if(animate){ requestAnimationFrame(function(){ requestAnimationFrame(function(){ g.classList.remove('hidden'); }); }); }
-    return g;
+  function showHead(){
+    head.setAttribute('d','M '+(XEND-10)+' '+(Y-5)+' L '+XEND+' '+Y+' L '+(XEND-10)+' '+(Y+5));
+    head.setAttribute('opacity',1);
   }
-  function setProgress(){
-    if(placed >= 1){
-      progress.setAttribute('d', 'M '+xOf(0)+' '+(BY+18)+' L '+xOf(placed)+' '+(BY+18));
-      progress.classList.remove('hidden');
-    } else { progress.classList.add('hidden'); }
+  function showUnit(){
+    unitBar.setAttribute('d','M '+X(0)+' '+Y+' L '+X(1)+' '+Y);
+    unitBar.setAttribute('opacity',1); unitTxt.setAttribute('opacity',1);
   }
-  function showUnitRef(){ // persistent labeled unit over [0,1]
-    unitRef.setAttribute('d', 'M '+xOf(0)+' '+BY+' L '+xOf(1)+' '+BY);
-    unitRefTxt.setAttribute('x', (xOf(0)+xOf(1))/2);
-    unitRefTxt.setAttribute('y', BY-18);
-    unitRef.style.opacity=1; unitRefTxt.style.opacity=1;
-  }
-  function refreshButtons(){
-    b0.disabled = placed >= 0;
-    b1.disabled = placed !== 0;
-    bS.disabled = placed < 1 || placed >= NMAX;
-    statusEl.textContent = 'Whole numbers placed: ' + Math.max(placed,0);
-    if(placed >= NMAX) cap.textContent = 'The whole numbers, all from one choice of unit. The line keeps going: 6, 7, 8, …';
+  function finalFrame(){
+    axis.setAttribute('x2',XEND); showHead();
+    for(var n=0;n<=NMAX;n++) drawNumber(n);
+    showUnit();
   }
 
-  function reset(){
-    marks.innerHTML=''; placed=-1;
-    axisLine.setAttribute('x1',40); axisLine.setAttribute('x2',40);
-    unitRef.style.opacity=0; unitRefTxt.style.opacity=0; mover.style.opacity=0;
-    progress.classList.add('hidden');
-    cap.textContent='An empty line. Choose where 0 goes to begin.';
-    refreshButtons();
-    // draw the bare line (animated, unless reduced motion)
-    var x2target = 868;
-    if(reduce){ axisLine.setAttribute('x2', x2target); return; }
-    var start=null, dur=600;
-    function grow(ts){
-      if(start===null) start=ts;
-      var p=Math.min((ts-start)/dur,1), e=1-Math.pow(1-p,3);
-      axisLine.setAttribute('x2', 40 + (x2target-40)*e);
-      if(p<1) requestAnimationFrame(grow);
+  if (reduce){ finalFrame(); return; }
+
+  // simple timeline runner
+  function animate(dur,step,done){
+    var t0=null;
+    function f(ts){
+      if(t0===null)t0=ts;
+      var p=Math.min((ts-t0)/dur,1);
+      step(p);
+      if(p<1) requestAnimationFrame(f); else if(done) done();
     }
-    requestAnimationFrame(grow);
+    requestAnimationFrame(f);
+  }
+  function ease(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
+  function wait(ms,done){ setTimeout(done,ms); }
+
+  function stampTo(n,done){                    // slide a unit copy from [0,1] out to [n-1,n], then place n
+    mover.setAttribute('opacity',1);
+    animate(560,function(p){
+      var e=ease(p), cx=X(0)+(X(n-1)-X(0))*e;
+      mover.setAttribute('d','M '+cx+' '+Y+' L '+(cx+UNIT)+' '+Y);
+    },function(){
+      mover.setAttribute('opacity',0);
+      drawNumber(n);
+      done();
+    });
   }
 
-  b0.addEventListener('click', function(){
-    placed=0; drawNumber(0,true);
-    cap.textContent='0 is set. Now choose a second point and call it 1 — that segment is the unit.';
-    refreshButtons();
-  });
-  b1.addEventListener('click', function(){
-    placed=1; drawNumber(1,true); showUnitRef(); setProgress();
-    cap.textContent='[0, 1] is the unit. This single length now fixes every other whole number.';
-    refreshButtons();
-  });
-  bS.addEventListener('click', function(){
-    if(placed<1 || placed>=NMAX) return;
-    var to=placed+1;
-    bS.disabled=true;
-    var place=function(){
-      placed=to; drawNumber(to,true); setProgress(); refreshButtons();
-      mover.style.opacity=0;
-      if(placed<NMAX) cap.textContent='Lay it down again…';
-    };
-    var x0=xOf(0), xEnd=xOf(to-1);
-    mover.setAttribute('d','M '+x0+' '+BY+' L '+(x0+UNIT)+' '+BY);
-    mover.style.opacity=1;
-    if(reduce){ place(); return; }
-    var start=null, dur=470;
-    function slide(ts){
-      if(start===null) start=ts;
-      var p=Math.min((ts-start)/dur,1), e= p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
-      var cx=x0+(xEnd-x0)*e;
-      mover.setAttribute('d','M '+cx+' '+BY+' L '+(cx+UNIT)+' '+BY);
-      if(p<1){ requestAnimationFrame(slide); } else { place(); }
-    }
-    requestAnimationFrame(slide);
-  });
-  bR.addEventListener('click', reset);
+  function cycle(){
+    clear(marks);
+    unitBar.setAttribute('opacity',0); unitTxt.setAttribute('opacity',0);
+    mover.setAttribute('opacity',0); head.setAttribute('opacity',0);
+    axis.setAttribute('x2',OX-30);
 
-  reset();
-
-  /* ============ SECOND: change-the-unit ============ */
-  var sMarks=document.getElementById('scaleMarks'),
-      range=document.getElementById('unitRange'),
-      readout=document.getElementById('unitReadout');
-  var SOX=46, SBY=86;
-  function renderScale(u){
-    sMarks.innerHTML='';
-    var n=0;
-    while(SOX + n*u <= 858 && n<=20){
-      var x=SOX+n*u;
-      sMarks.appendChild(el('line',{'class': n===0?'tick0':'tick', x1:x, y1:SBY-11, x2:x, y2:SBY+11}));
-      sMarks.appendChild(el('circle',{'class':'pt', cx:x, cy:SBY, r:3.6}));
-      var t=el('text',{'class':'num', x:x, y:SBY+34, style:'font-size:16px'}); t.textContent=n;
-      sMarks.appendChild(t);
-      n++;
-    }
-    // highlight the unit [0,1]
-    var bar=el('path',{'class':'unitbar', d:'M '+SOX+' '+SBY+' L '+(SOX+u)+' '+SBY, 'stroke-width':6});
-    sMarks.appendChild(bar);
-    var lab=el('text',{'class':'bracetxt', x:SOX+u/2, y:SBY-16}); lab.textContent='1 unit';
-    sMarks.appendChild(lab);
-    readout.textContent = Math.round(u)+' px (your choice)';
+    animate(700,function(p){                                  // 1. the bare line
+      var e=1-Math.pow(1-p,3);
+      axis.setAttribute('x2',(OX-30)+(XEND-(OX-30))*e);
+    },function(){
+      showHead();
+      wait(350,function(){ drawNumber(0);                      // 2. choose 0
+      wait(600,function(){ drawNumber(1); showUnit();          // 3. choose 1 — the unit
+      wait(750,function(){ stampTo(2,function(){               // 4. lay it down again…
+      wait(230,function(){ stampTo(3,function(){
+      wait(230,function(){ stampTo(4,function(){
+      wait(3400,cycle);                                        // 5. hold, then loop
+      });});});});});});});});
+    });
   }
-  range.addEventListener('input', function(){ renderScale(+range.value); });
-  renderScale(+range.value);
+  cycle();
 })();
 </script>
